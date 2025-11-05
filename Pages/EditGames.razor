@@ -1,8 +1,56 @@
 ﻿@page "/edit_games"
+@using Football_Two.Services
+@using Football_Two.Models
+@inject DataAccess dataAccess
 
 <h5>EditGames</h5>
 
+<div>
+    <button class="btn btn-primary" @onclick="GetGames">Edit Games</button>
+</div>
+
+<div style="margin-top:20px;">
+    @if (games is not null && games.Length > 0)
+    {
+        <div class="tableFixHead">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Game Id</th>
+                        <th>Vid</th>
+                        <th>Visiting Team</th>
+                        <th>Hid</th>
+                        <th>Home Team</th>
+                        <th>Date</th>
+                        <th>Week</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var game in games)
+                    {
+                        <tr>
+                            <td>@game.gameId</td>
+                            <td>@game.visitingTeamId</td>
+                            <td>@game.visitingTeamName</td>
+                            <td>@game.homeTeamId</td>
+                            <td>@game.homeTeamName</td>
+                            <td>@game.datePlayed</td>
+                            <td>@game.scheduleWeek</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+
 @code {
-    [Parameter]
-    public 
+
+    private Game[]? games;
+
+    private async void GetGames()
+    {
+        games = await dataAccess.GameQuery();
+    }
 }

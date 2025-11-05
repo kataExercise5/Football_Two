@@ -1,0 +1,16 @@
+﻿body {
+}
+
+
+.tableFixHead {
+    border: 1px solid black;
+    overflow-y: auto; /* make the table scrollable if height is more than 200 px  */
+}
+
+table, th, td {
+    border: 1px solid black;
+}
+
+tr:nth-child(even) {
+    background-color: lightblue;
+}

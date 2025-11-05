@@ -1,20 +1,19 @@
 ﻿@page "/get_latest_odds"
 @using Football_Two.Services
+@using Football_Two.Models
 
 @inject GetOdds oddsService
 
 <h5>GetLatestOdds</h5>
 
 <div>
-    <button class="btn btn-primary" @onclick="GetOddsDemo">Get Odds</button>
+    <button class="btn btn-primary" @onclick="GetOddsDemo">Get Latest Odds</button>
 </div>
 
 @code {
-
-
+    
     private async void GetOddsDemo()
     {
         await oddsService.GetLatestOdds();
-
     }
 }

@@ -76,7 +76,7 @@ namespace Football_Two.Services
 
         private int GetGameId(BettingLine line)
         {
-            int gameId = dataAccess.GameQuery(line.home_team, line.away_team, line.commence_time.Substring(0, 10));
+            int gameId = dataAccess.GameIdQuery(line.home_team, line.away_team, line.commence_time.Substring(0, 10));
             if (gameId == -1)
             {
                 gameId = dataAccess.GameInsert(line.home_team, line.away_team, line.commence_time.Substring(0, 10));
