@@ -7,6 +7,14 @@
 
 <div>
     <button class="btn btn-primary" @onclick="GetGames">Edit Games</button>
+
+    <label style="margin-left:10px;">Week:</label>
+    <select @bind="@scheduleWeek">
+        @foreach (var week in ScheduleWeeks)
+        {
+            <option value="@week.Key">@week.Key</option>
+        }
+    </select>
 </div>
 
 <div style="margin-top:20px;">
@@ -49,8 +57,19 @@
 
     private Game[]? games;
 
+    public int scheduleWeek = -1;
+    public Dictionary<int, int> ScheduleWeeks = new Dictionary<int, int>()
+    {
+        {1,1}, {2,2}, {3,3}, {4,4}, {5,5}, {6,6}, {7,7}, {8,8}, {9,9},
+        {10,10}, {11,11}, {12,12}, {13,13}, {14,14}, {15,15}, {16,16}, {17,17}, {18,18}
+    };
+
+    protected override async Task OnInitializedAsync()
+    {
+    }
+
     private async void GetGames()
     {
-        games = await dataAccess.GameQuery();
+        games = await dataAccess.GameQuery(scheduleWeek);
     }
 }
