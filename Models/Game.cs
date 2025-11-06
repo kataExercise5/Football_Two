@@ -9,6 +9,7 @@
         public string homeTeamName { get; set; }
         public bool stadium {  get; set; }
         public DateOnly datePlayed { get; set; }
+        public DateTime datePlayedUTC { get; set; }
         public int dayOfWeek { get; set; }
         public int? visitingTeamScore { get; set; }
         public int? homeTeamScore { get; set; }

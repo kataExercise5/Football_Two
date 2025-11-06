@@ -64,7 +64,7 @@ namespace Football_Two.Services
             return Task.FromResult(games.ToArray());
         }
 
-        public int GameIdQuery(string homeTeam, string visitingTeam, string datePlayed)
+        public int GameIdQuery(string homeTeam, string visitingTeam, DateTime datePlayed)
         {
             int gameId = -1;
             try
@@ -76,9 +76,9 @@ namespace Football_Two.Services
                     cmd.Parameters.AddWithValue("@visitingTeam", visitingTeam);
                     cmd.Parameters.AddWithValue("@homeTeam", homeTeam);
 
-                    DateTime dt = DateTime.ParseExact(datePlayed, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+                    //DateTime dt = DateTime.ParseExact(datePlayed, "yyyy-MM-dd", CultureInfo.InvariantCulture);
                     SqlParameter dtParm = new SqlParameter("@datePlayed", SqlDbType.DateTime);
-                    dtParm.Value = dt;
+                    dtParm.Value = datePlayed;
                     cmd.Parameters.Add(dtParm);
 
                     conn.Open();
@@ -102,7 +102,7 @@ namespace Football_Two.Services
             return gameId;
         }
 
-        public int GameInsert(string homeTeam, string visitorTeam, string datePlayed)
+        public int GameInsert(string homeTeam, string visitorTeam, DateTime datePlayed)
         {
             try
             {
@@ -112,10 +112,12 @@ namespace Football_Two.Services
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@homeTeamName", homeTeam);
                     cmd.Parameters.AddWithValue("@visitorTeamName", visitorTeam);
+                    cmd.Parameters.AddWithValue("@dayOfWeek", (int)(datePlayed.DayOfWeek));
 
-                    DateTime dt = DateTime.ParseExact(datePlayed, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+
+                    //DateTime dt = DateTime.ParseExact(datePlayed, "yyyy-MM-dd", CultureInfo.InvariantCulture);
                     SqlParameter dtParm = new SqlParameter("@datePlayed", SqlDbType.DateTime);
-                    dtParm.Value = dt;
+                    dtParm.Value = datePlayed;
                     cmd.Parameters.Add(dtParm);
 
                     cmd.Parameters.Add("@gameId", SqlDbType.Int).Direction = ParameterDirection.Output;
@@ -132,6 +134,69 @@ namespace Football_Two.Services
             }
             catch (Exception ex)
             {
+                throw;
+            }
+        }
+
+        public int BookMakerIdQuery(string key, string title)
+        {
+            int bookMakerId = -1;
+
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(localHostConnStr))
+                {
+                    SqlCommand cmd = new SqlCommand("BOOKMAKERS_QUERY_OR_INSERT", conn);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@bookMakerKey", key);
+                    cmd.Parameters.AddWithValue("@bookMakerTitle", title);
+                    cmd.Parameters.Add("@bookMakerId", SqlDbType.Int).Direction = ParameterDirection.Output;
+
+                    conn.Open();
+
+                    int rc = cmd.ExecuteNonQuery();
+                    bookMakerId = Convert.ToInt32(cmd.Parameters["@bookMakerId"].Value);
+
+                    conn.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+            return bookMakerId;
+        }
+
+        public void LineByTeamInsert(int gameId, int bookMakerId, string betType, DateTime lastUpdate, Outcome outcome)
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(localHostConnStr))
+                {
+                    SqlCommand cmd = new SqlCommand("LINES_BY_TEAM_INSERT", conn);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@gameId", gameId);
+                    cmd.Parameters.AddWithValue("@bookMakerId", bookMakerId);
+                    cmd.Parameters.AddWithValue("@teamName", outcome.name);
+                    cmd.Parameters.AddWithValue("@price", outcome.price);
+                    cmd.Parameters.AddWithValue("@spread", outcome.point);
+                    cmd.Parameters.AddWithValue("@betType", betType);
+
+                    //DateTime dt = DateTime.ParseExact(lastUpdate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+                    SqlParameter dtParm = new SqlParameter("@datePublished", SqlDbType.DateTime);
+                    dtParm.Value = lastUpdate;
+                    cmd.Parameters.Add(dtParm);
+
+                    conn.Open();
+
+                    int rc = cmd.ExecuteNonQuery();
+                    conn.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+
                 throw;
             }
         }

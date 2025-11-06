@@ -9,6 +9,6 @@ namespace Football_Two.Models
         public string last_update { get; set; }
 
         [JsonProperty("markets")]
-        public Market[] market { get; set; }
+        public Market[] markets { get; set; }
     }
 }

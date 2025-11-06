@@ -12,6 +12,6 @@ namespace Football_Two.Models
         public string away_team { get; set; }
 
         [JsonProperty("bookmakers")]
-        public Bookmaker[] bookmaker { get; set; }
+        public Bookmaker[] bookmakers { get; set; }
     }
 }
