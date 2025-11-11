@@ -15,6 +15,20 @@
             <option value="@fsw.Key">@fsw.Value</option>
         }
     </select>
+
+    @if (games != null && games.Length > 0)
+    {
+        @if (updateMode)
+        {
+            <button class="btn btn-primary" style="margin-left:20px;" @onclick="SaveScores">Save</button>
+            <button class="btn btn-primary" style="margin-left:20px;" @onclick="CancelScores">Cancel</button>
+        }
+        else
+        {
+            <button class="btn btn-primary" style="margin-left:20px;" @onclick="EditScores">Update Scores</button>
+        }
+    }
+    
 </div>
 
 <div style="margin-top:20px;">
@@ -47,8 +61,26 @@
                             <td>@game.homeTeamName</td>
                             <td>@game.datePlayed</td>
                             <td>@game.scheduleWeek</td>
-                            <td>@game.visitingTeamScore</td>
-                            <td>@game.homeTeamScore</td>
+                            <td>
+                                @if (updateMode)
+                                {
+                                    <input type="number" class="ScoreUpdate" @bind="@game.visitingTeamScore" />
+                                }
+                                else
+                                {
+                                    @game.visitingTeamScore
+                                }
+                            </td>
+                            <td>
+                                @if (updateMode)
+                                {
+                                 <input type="number" class="ScoreUpdate" @bind="@game.homeTeamScore" />
+                                }
+                                else
+                                {
+                                    @game.homeTeamScore
+                                }
+                            </td>
                         </tr>
                     }
                 </tbody>
@@ -64,6 +96,7 @@
     private Dictionary<int, string>? formatedScheduleWeeks;
 
     public int scheduleWeek = -1;
+    private bool updateMode = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -78,10 +111,31 @@
                 DateOnly.FromDateTime(sw.endDate).ToString("MM/dd/yyyy")
             );
         }
+        scheduleWeek = formatedScheduleWeeks.First().Key;
     }
 
     private async void GetGames()
     {
         games = await dataAccess.GameQuery(scheduleWeek);
+    }
+
+    private async void EditScores()
+    {
+        updateMode = true;
+    }
+
+    private async void SaveScores()
+    {
+        foreach (var game in games)
+        {
+            int rc = dataAccess.ScoreUpdate(game.gameId, game.visitingTeamScore.Value, game.homeTeamScore.Value);
+        }
+
+        updateMode = false;
+    }
+
+    private async void CancelScores()
+    {
+        updateMode = false;
     }
 }

@@ -138,6 +138,34 @@ namespace Football_Two.Services
             }
         }
 
+        public int ScoreUpdate(int gameId, int visitingTeamScore, int homeTeamScore)
+        {
+            int rc = 0;
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(localHostConnStr))
+                {
+                    SqlCommand cmd = new SqlCommand("SCORE_UPDATE", conn);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@gameId", gameId);
+                    cmd.Parameters.AddWithValue("@visitingTeamScore", visitingTeamScore);
+                    cmd.Parameters.AddWithValue("@homeTeamScore", homeTeamScore);
+
+                    conn.Open();
+
+                    rc = cmd.ExecuteNonQuery();
+
+                    conn.Close();
+
+                    return rc;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
         public int BookMakerIdQuery(string key, string title)
         {
             int bookMakerId = -1;
