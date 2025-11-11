@@ -200,5 +200,43 @@ namespace Football_Two.Services
                 throw;
             }
         }
+
+        public Task<ScheduleWeek[]> ScheduleDatesByWeekQuery(int year)
+        {
+            List<ScheduleWeek> scheduleWeeks = new List<ScheduleWeek>();
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(localHostConnStr))
+                {
+                    SqlCommand cmd = new SqlCommand("SCHEDULE_WEEKS_QUERY", conn);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@scheduleYear", year);
+
+                    conn.Open();
+
+                    SqlDataReader rdr = cmd.ExecuteReader();
+
+                    while (rdr.Read())
+                    {
+                        ScheduleWeek sw = new ScheduleWeek()
+                        { 
+                            year = rdr.GetInt32("ScheduleYear"),
+                            week = rdr.GetInt32("ScheduleWeek"),
+                            startDate = rdr.GetDateTime("StartDate"),
+                            endDate = rdr.GetDateTime("EndDate")
+                        };
+                        scheduleWeeks.Add(sw);
+                    }
+
+                    rdr.Close();
+                    conn.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            return Task.FromResult(scheduleWeeks.ToArray());
+        }
     }
 }

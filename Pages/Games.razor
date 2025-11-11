@@ -1,18 +1,18 @@
-﻿@page "/edit_games"
+﻿@page "/games"
 @using Football_Two.Services
 @using Football_Two.Models
 @inject DataAccess dataAccess
 
-<h5>EditGames</h5>
+<h5>Games</h5>
 
 <div>
-    <button class="btn btn-primary" @onclick="GetGames">Edit Games</button>
+    <button class="btn btn-primary" @onclick="GetGames">Select Games</button>
 
     <label style="margin-left:10px;">Week:</label>
     <select @bind="@scheduleWeek">
-        @foreach (var week in ScheduleWeeks)
+        @foreach (var fsw in formatedScheduleWeeks)
         {
-            <option value="@week.Key">@week.Key</option>
+            <option value="@fsw.Key">@fsw.Value</option>
         }
     </select>
 </div>
@@ -31,6 +31,8 @@
                         <th>Home Team</th>
                         <th>Date</th>
                         <th>Week</th>
+                        <th>Visitor Score</th>
+                        <th>Home Score</th>
                     </tr>
                 </thead>
 
@@ -45,6 +47,8 @@
                             <td>@game.homeTeamName</td>
                             <td>@game.datePlayed</td>
                             <td>@game.scheduleWeek</td>
+                            <td>@game.visitingTeamScore</td>
+                            <td>@game.homeTeamScore</td>
                         </tr>
                     }
                 </tbody>
@@ -56,16 +60,24 @@
 @code {
 
     private Game[]? games;
+    private ScheduleWeek[]? scheduleWeeks;
+    private Dictionary<int, string>? formatedScheduleWeeks;
 
     public int scheduleWeek = -1;
-    public Dictionary<int, int> ScheduleWeeks = new Dictionary<int, int>()
-    {
-        {1,1}, {2,2}, {3,3}, {4,4}, {5,5}, {6,6}, {7,7}, {8,8}, {9,9},
-        {10,10}, {11,11}, {12,12}, {13,13}, {14,14}, {15,15}, {16,16}, {17,17}, {18,18}
-    };
 
     protected override async Task OnInitializedAsync()
     {
+        scheduleWeeks = await dataAccess.ScheduleDatesByWeekQuery(2025);
+        formatedScheduleWeeks = new Dictionary<int, string>();
+        foreach (ScheduleWeek sw in scheduleWeeks)
+        {
+            formatedScheduleWeeks.Add(sw.week,
+                "Week # " + sw.week.ToString() + ":  " +
+                DateOnly.FromDateTime(sw.startDate).ToString("MM/dd/yyyy") +
+                " thru " +
+                DateOnly.FromDateTime(sw.endDate).ToString("MM/dd/yyyy")
+            );
+        }
     }
 
     private async void GetGames()
