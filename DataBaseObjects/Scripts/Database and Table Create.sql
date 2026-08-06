@@ -1,0 +1,276 @@
+USE [master]
+GO
+
+/****** Object:  Database [Football]    Script Date: 8/6/2026 2:02:48 PM ******/
+CREATE DATABASE [Football]
+ CONTAINMENT = NONE
+ ON  PRIMARY 
+( NAME = N'Football', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL16.MSSQLSERVER\MSSQL\DATA\Football.mdf' , SIZE = 8192KB , MAXSIZE = UNLIMITED, FILEGROWTH = 65536KB )
+ LOG ON 
+( NAME = N'Football_log', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL16.MSSQLSERVER\MSSQL\DATA\Football_log.ldf' , SIZE = 8192KB , MAXSIZE = 2048GB , FILEGROWTH = 65536KB )
+ WITH CATALOG_COLLATION = DATABASE_DEFAULT, LEDGER = OFF
+GO
+
+IF (1 = FULLTEXTSERVICEPROPERTY('IsFullTextInstalled'))
+begin
+EXEC [Football].[dbo].[sp_fulltext_database] @action = 'enable'
+end
+GO
+
+ALTER DATABASE [Football] SET ANSI_NULL_DEFAULT OFF 
+GO
+
+ALTER DATABASE [Football] SET ANSI_NULLS OFF 
+GO
+
+ALTER DATABASE [Football] SET ANSI_PADDING OFF 
+GO
+
+ALTER DATABASE [Football] SET ANSI_WARNINGS OFF 
+GO
+
+ALTER DATABASE [Football] SET ARITHABORT OFF 
+GO
+
+ALTER DATABASE [Football] SET AUTO_CLOSE OFF 
+GO
+
+ALTER DATABASE [Football] SET AUTO_SHRINK OFF 
+GO
+
+ALTER DATABASE [Football] SET AUTO_UPDATE_STATISTICS ON 
+GO
+
+ALTER DATABASE [Football] SET CURSOR_CLOSE_ON_COMMIT OFF 
+GO
+
+ALTER DATABASE [Football] SET CURSOR_DEFAULT  GLOBAL 
+GO
+
+ALTER DATABASE [Football] SET CONCAT_NULL_YIELDS_NULL OFF 
+GO
+
+ALTER DATABASE [Football] SET NUMERIC_ROUNDABORT OFF 
+GO
+
+ALTER DATABASE [Football] SET QUOTED_IDENTIFIER OFF 
+GO
+
+ALTER DATABASE [Football] SET RECURSIVE_TRIGGERS OFF 
+GO
+
+ALTER DATABASE [Football] SET  DISABLE_BROKER 
+GO
+
+ALTER DATABASE [Football] SET AUTO_UPDATE_STATISTICS_ASYNC OFF 
+GO
+
+ALTER DATABASE [Football] SET DATE_CORRELATION_OPTIMIZATION OFF 
+GO
+
+ALTER DATABASE [Football] SET TRUSTWORTHY OFF 
+GO
+
+ALTER DATABASE [Football] SET ALLOW_SNAPSHOT_ISOLATION OFF 
+GO
+
+ALTER DATABASE [Football] SET PARAMETERIZATION SIMPLE 
+GO
+
+ALTER DATABASE [Football] SET READ_COMMITTED_SNAPSHOT OFF 
+GO
+
+ALTER DATABASE [Football] SET HONOR_BROKER_PRIORITY OFF 
+GO
+
+ALTER DATABASE [Football] SET RECOVERY FULL 
+GO
+
+ALTER DATABASE [Football] SET  MULTI_USER 
+GO
+
+ALTER DATABASE [Football] SET PAGE_VERIFY CHECKSUM  
+GO
+
+ALTER DATABASE [Football] SET DB_CHAINING OFF 
+GO
+
+ALTER DATABASE [Football] SET FILESTREAM( NON_TRANSACTED_ACCESS = OFF ) 
+GO
+
+ALTER DATABASE [Football] SET TARGET_RECOVERY_TIME = 60 SECONDS 
+GO
+
+ALTER DATABASE [Football] SET DELAYED_DURABILITY = DISABLED 
+GO
+
+ALTER DATABASE [Football] SET ACCELERATED_DATABASE_RECOVERY = OFF  
+GO
+
+ALTER DATABASE [Football] SET QUERY_STORE = ON
+GO
+
+ALTER DATABASE [Football] SET QUERY_STORE (OPERATION_MODE = READ_WRITE, CLEANUP_POLICY = (STALE_QUERY_THRESHOLD_DAYS = 30), DATA_FLUSH_INTERVAL_SECONDS = 900, INTERVAL_LENGTH_MINUTES = 60, MAX_STORAGE_SIZE_MB = 1000, QUERY_CAPTURE_MODE = AUTO, SIZE_BASED_CLEANUP_MODE = AUTO, MAX_PLANS_PER_QUERY = 200, WAIT_STATS_CAPTURE_MODE = ON)
+GO
+
+ALTER DATABASE [Football] SET  READ_WRITE 
+GO
+
+
+
+------------------------------
+--
+--Teams
+--
+------------------------------
+USE [Football]
+GO
+
+/****** Object:  Table [dbo].[Teams]    Script Date: 8/6/2026 2:02:41 PM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[Teams](
+	[teamId] [int] IDENTITY(1,1) NOT NULL,
+	[teamName] [nchar](32) NOT NULL,
+	[nickName] [nchar](16) NOT NULL,
+	[indoorStadium] [bit] NOT NULL,
+ CONSTRAINT [PK_Person] PRIMARY KEY CLUSTERED 
+(
+	[teamId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+
+
+------------------------------
+--
+--ScheduleWeeks
+--
+------------------------------
+USE [Football]
+GO
+
+/****** Object:  Table [dbo].[ScheduleWeeks]    Script Date: 8/6/2026 2:02:35 PM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[ScheduleWeeks](
+	[ScheduleYear] [int] NOT NULL,
+	[ScheduleWeek] [int] NOT NULL,
+	[StartDate] [date] NOT NULL,
+	[EndDate] [date] NOT NULL,
+ CONSTRAINT [PK_ScheduleWeek] PRIMARY KEY CLUSTERED 
+(
+	[ScheduleYear] ASC,
+	[ScheduleWeek] ASC,
+	[StartDate] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+
+
+------------------------------
+--
+--BookMakers
+--
+------------------------------
+USE [Football]
+GO
+
+/****** Object:  Table [dbo].[BookMakers]    Script Date: 8/6/2026 2:02:10 PM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[BookMakers](
+	[bookMakerId] [int] IDENTITY(1,1) NOT NULL,
+	[bookieKey] [nvarchar](32) NOT NULL,
+	[bookieTitle] [nvarchar](32) NOT NULL,
+ CONSTRAINT [PK_BookMakers] PRIMARY KEY CLUSTERED 
+(
+	[bookMakerId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+
+
+------------------------------
+--
+--Games
+--
+------------------------------
+USE [Football]
+GO
+
+/****** Object:  Table [dbo].[Games]    Script Date: 8/6/2026 2:02:25 PM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[Games](
+	[gameId] [int] IDENTITY(1,1) NOT NULL,
+	[visitingTeam] [int] NOT NULL,
+	[homeTeam] [int] NOT NULL,
+	[stadium] [bit] NOT NULL,
+	[datePlayed] [date] NOT NULL,
+	[dayOfWeek] [smallint] NOT NULL,
+	[visitorScore] [smallint] NULL,
+	[homeScore] [smallint] NULL,
+	[year] [smallint] NULL,
+	[week] [smallint] NOT NULL,
+ CONSTRAINT [PK_Games] PRIMARY KEY CLUSTERED 
+(
+	[gameId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+
+
+------------------------------
+--
+--LinesByTeam
+--
+------------------------------
+USE [Football]
+GO
+
+/****** Object:  Table [dbo].[LinesByTeam]    Script Date: 8/6/2026 2:02:30 PM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[LinesByTeam](
+	[linesByTeamId] [int] IDENTITY(1,1) NOT NULL,
+	[teamId] [int] NOT NULL,
+	[gameId] [int] NOT NULL,
+	[bookMakerId] [int] NOT NULL,
+	[datePublished] [date] NOT NULL,
+	[price] [smallint] NOT NULL,
+	[spread] [decimal](3, 1) NULL,
+	[betType] [varchar](20) NULL,
+ CONSTRAINT [PK_LinesByTeam] PRIMARY KEY CLUSTERED 
+(
+	[linesByTeamId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[LinesByTeam] ADD  DEFAULT ('unknown') FOR [betType]
+GO
