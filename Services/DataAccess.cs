@@ -9,7 +9,7 @@ namespace Football_Two.Services
     {
         private string localHostConnStr = "Server=localhost;Database=Football;Trusted_Connection=True;";
 
-        public Task<Game[]> GameQuery(int scheduleWeek=99)
+        public Task<Game[]> GameQuery(int scheduleYear, int scheduleWeek)
         {
             List<Game> games = new List<Game>();
             try
@@ -18,6 +18,7 @@ namespace Football_Two.Services
                 {
                     SqlCommand cmd = new SqlCommand("GAME_QUERY", conn);
                     cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@scheduleYear", scheduleYear);
                     cmd.Parameters.AddWithValue("@scheduleWeek", scheduleWeek);
 
                     conn.Open();
@@ -47,7 +48,7 @@ namespace Football_Two.Services
                                 game.homeTeamScore = rdr.GetInt16("homeTeamScore");
                             }
 
-                            game.scheduleWeek = rdr.GetInt16("scheduleWeek");
+                            //game.scheduleWeek = rdr.GetInt16("scheduleWeek");
 
                             games.Add(game);
                         }
@@ -117,7 +118,7 @@ namespace Football_Two.Services
 
                     //DateTime dt = DateTime.ParseExact(datePlayed, "yyyy-MM-dd", CultureInfo.InvariantCulture);
                     SqlParameter dtParm = new SqlParameter("@datePlayed", SqlDbType.DateTime);
-                    dtParm.Value = datePlayed;
+                    dtParm.Value = datePlayed.Date.ToShortDateString(); ;
                     cmd.Parameters.Add(dtParm);
 
                     cmd.Parameters.Add("@gameId", SqlDbType.Int).Direction = ParameterDirection.Output;

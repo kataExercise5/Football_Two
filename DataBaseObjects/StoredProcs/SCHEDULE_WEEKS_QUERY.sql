@@ -1,13 +1,8 @@
 ﻿CREATE PROCEDURE [dbo].[SCHEDULE_WEEKS_QUERY]
-	@scheduleYear int = 0
+	@scheduleYear int
 AS
 BEGIN
 	SET NOCOUNT ON;
-
-	IF (@scheduleYear = 0)
-		BEGIN
-			SELECT @scheduleYear = DATEPART(year, getdate());
-		END
 
 	SELECT SW.ScheduleYear, SW.ScheduleWeek, SW.StartDate, SW.EndDate
 	FROM ScheduleWeeks SW

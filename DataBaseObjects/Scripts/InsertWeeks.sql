@@ -1,44 +1,16 @@
-﻿USE [Football]
-GO
+﻿declare @season_year int = 2026;
+declare @season_start_date date = '2026-09-10';
+declare @week int = 1;
+declare @endWeek int = 17;
+declare @scheduleWeekStartDate date;
 
---DELETE SCHEDULEWEEKS
+delete ScheduleWeeks where ScheduleYear = @season_year;
 
-INSERT INTO [dbo].[ScheduleWeeks]
-	([ScheduleYear], [ScheduleWeek], [StartDate], [EndDate])
-VALUES (2025, 10, '2025-11-06', '2025-11-10')
-
-INSERT INTO [dbo].[ScheduleWeeks]
-	([ScheduleYear], [ScheduleWeek], [StartDate], [EndDate])
-VALUES (2025, 11, '2025-11-13', '2025-11-17')
-
-INSERT INTO [dbo].[ScheduleWeeks]
-	([ScheduleYear], [ScheduleWeek], [StartDate], [EndDate])
-VALUES (2025, 12, '2025-11-20', '2025-11-24')
-
-INSERT INTO [dbo].[ScheduleWeeks]
-	([ScheduleYear], [ScheduleWeek], [StartDate], [EndDate])
-VALUES (2025, 13, '2025-11-27', '2025-11-10')
-
-INSERT INTO [dbo].[ScheduleWeeks]
-	([ScheduleYear], [ScheduleWeek], [StartDate], [EndDate])
-VALUES (2025, 14, '2025-12-04', '2025-12-08')
-
-INSERT INTO [dbo].[ScheduleWeeks]
-	([ScheduleYear], [ScheduleWeek], [StartDate], [EndDate])
-VALUES (2025, 15, '2025-12-11', '2025-12-15')
-
-INSERT INTO [dbo].[ScheduleWeeks]
-	([ScheduleYear], [ScheduleWeek], [StartDate], [EndDate])
-VALUES (2025, 16, '2025-12-18', '2025-12-23')
-
-INSERT INTO [dbo].[ScheduleWeeks]
-	([ScheduleYear], [ScheduleWeek], [StartDate], [EndDate])
-VALUES (2025, 17, '2025-12-25', '2025-12-30')
-
-INSERT INTO [dbo].[ScheduleWeeks]
-	([ScheduleYear], [ScheduleWeek], [StartDate], [EndDate])
-VALUES (2025, 18, '2026-01-01', '2026-01-05')
-
-SELECT * FROM SCHEDULEWEEKS
-
-
+set @scheduleWeekStartDate = @season_start_date;
+while @week <= @endWeek
+	begin
+		insert into ScheduleWeeks (ScheduleYear, ScheduleWeek, StartDate, EndDate)
+			values (@season_year, @week, @scheduleWeekStartDate, DATEADD(day, 4, @scheduleWeekStartDate));
+		set @week = @week + 1;
+		set @scheduleWeekStartDate = DATEADD(day, 7, @scheduleWeekStartDate);
+	end

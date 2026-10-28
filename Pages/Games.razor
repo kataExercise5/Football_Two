@@ -6,15 +6,23 @@
 <h5>Games</h5>
 
 <div>
-    <button class="btn btn-primary" @onclick="GetGames">Select Games</button>
+    <label style="margin-left:10px;">Year:</label>
+    <input type="number" class="ScoreUpdate" @bind="@scheduleYear" />
+        
+    <button class="btn btn-primary" @onclick="PopulateWeeks">Select Weeks</button>
 
     <label style="margin-left:10px;">Week:</label>
     <select @bind="@scheduleWeek">
-        @foreach (var fsw in formatedScheduleWeeks)
+        @if (formatedScheduleWeeks != null)
         {
-            <option value="@fsw.Key">@fsw.Value</option>
+                @foreach (var fsw in formatedScheduleWeeks)
+                {
+                    <option value="@fsw.Key">@fsw.Value</option>
+                }
         }
     </select>
+
+    <button class="btn btn-primary" @onclick="GetGames">Select Games</button>
 
     @if (games != null && games.Length > 0)
     {
@@ -44,7 +52,6 @@
                         <th>Hid</th>
                         <th>Home Team</th>
                         <th>Date</th>
-                        <th>Week</th>
                         <th>Visitor Score</th>
                         <th>Home Score</th>
                     </tr>
@@ -60,7 +67,6 @@
                             <td>@game.homeTeamId</td>
                             <td>@game.homeTeamName</td>
                             <td>@game.datePlayed</td>
-                            <td>@game.scheduleWeek</td>
                             <td>
                                 @if (updateMode)
                                 {
@@ -92,15 +98,21 @@
 @code {
 
     private Game[]? games;
-    private ScheduleWeek[]? scheduleWeeks;
+    private ScheduleWeek[]? scheduleWeeks = null;
     private Dictionary<int, string>? formatedScheduleWeeks;
 
     public int scheduleWeek = -1;
+    public int scheduleYear = -1;
     private bool updateMode = false;
 
     protected override async Task OnInitializedAsync()
     {
-        scheduleWeeks = await dataAccess.ScheduleDatesByWeekQuery(2025);
+
+    }
+
+    protected async void PopulateWeeks()
+    {
+        scheduleWeeks = await dataAccess.ScheduleDatesByWeekQuery(scheduleYear);
         formatedScheduleWeeks = new Dictionary<int, string>();
         foreach (ScheduleWeek sw in scheduleWeeks)
         {
@@ -116,7 +128,7 @@
 
     private async void GetGames()
     {
-        games = await dataAccess.GameQuery(scheduleWeek);
+        games = await dataAccess.GameQuery(scheduleYear, scheduleWeek);
     }
 
     private async void EditScores()

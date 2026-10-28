@@ -12,20 +12,22 @@ BEGIN
 	select @homeTeamId = teamId from Teams where teamName = @homeTeamName;
 	select @visitorTeamId = teamId from Teams where teamName = @visitorTeamName;
 
-	DECLARE @scheduleWeek smallint = 1;
-	select @scheduleWeek = sw.ScheduleWeek from scheduleweeks sw
+	DECLARE @scheduleWeek smallint = -1;
+	declare @scheduleYear smallint = -1;
+	select @scheduleYear=sw.ScheduleYear, @scheduleWeek = sw.ScheduleWeek from scheduleweeks sw
 	where @datePlayed between sw.startdate and sw.enddate;
+
 
 	
 	INSERT INTO [dbo].[Games]
 	(
 		visitingTeam, homeTeam, stadium, datePlayed, dayOfWeek, 
-		visitorScore, homeScore, week
+		visitorScore, homeScore, scheduleYear, scheduleWeek
 	)
 	VALUES
 	(
 		@visitorTeamId, @homeTeamId, 0, @datePlayed, @dayOfWeek,
-		null, null, @scheduleWeek
+		null, null, @scheduleYear, @scheduleWeek
 	)
 
 	SELECT @gameId = SCOPE_IDENTITY();
