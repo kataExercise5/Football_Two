@@ -1,7 +1,10 @@
 ﻿@page "/games"
+
 @using Football_Two.Services
 @using Football_Two.Models
+
 @inject DataAccess dataAccess
+@inject NavigationManager navMgr
 
 <h5>Games</h5>
 
@@ -46,6 +49,7 @@
             <table>
                 <thead>
                     <tr>
+                        <th>Odds</th>
                         <th>Game Id</th>
                         <th>Vid</th>
                         <th>Visiting Team</th>
@@ -61,6 +65,9 @@
                     @foreach (var game in games)
                     {
                         <tr>
+                            <td>
+                                <button class="btn btn-primary" style="margin-left:20px;" @onclick="(() => ShowOdds(game.gameId))">Show Odds</button>
+                            </td>
                             <td>@game.gameId</td>
                             <td>@game.visitingTeamId</td>
                             <td>@game.visitingTeamName</td>
@@ -149,5 +156,11 @@
     private async void CancelScores()
     {
         updateMode = false;
+    }
+
+    private async void ShowOdds(int selectedGameId)
+    {
+        string url = "/odds/" + selectedGameId.ToString();
+        navMgr.NavigateTo(url);
     }
 }

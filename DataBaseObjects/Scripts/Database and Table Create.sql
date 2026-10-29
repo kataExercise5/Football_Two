@@ -227,7 +227,7 @@ CREATE TABLE [dbo].[Games](
 	[homeTeam] [int] NOT NULL,
 	[stadium] [bit] NOT NULL,
 	[datePlayed] [date] NOT NULL,
-	[dayOfWeek] [smallint] NOT NULL,
+	[dayOfWeekPlayed] [smallint] NOT NULL,
 	[visitorScore] [smallint] NULL,
 	[homeScore] [smallint] NULL,
 	[year] [smallint] NULL,

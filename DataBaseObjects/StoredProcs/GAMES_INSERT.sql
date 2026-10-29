@@ -2,7 +2,7 @@
 	@homeTeamName NVARCHAR(32),
 	@visitorTeamName NVARCHAR(32),
 	@datePlayed date,
-	@dayOfWeek smallint,
+	@dayOfWeekPlayed smallint,
 	@gameId int OUTPUT
 AS
 BEGIN
@@ -21,12 +21,12 @@ BEGIN
 	
 	INSERT INTO [dbo].[Games]
 	(
-		visitingTeam, homeTeam, stadium, datePlayed, dayOfWeek, 
+		visitingTeam, homeTeam, stadium, datePlayed, dayOfWeekPlayed, 
 		visitorScore, homeScore, scheduleYear, scheduleWeek
 	)
 	VALUES
 	(
-		@visitorTeamId, @homeTeamId, 0, @datePlayed, @dayOfWeek,
+		@visitorTeamId, @homeTeamId, 0, @datePlayed, @dayOfWeekPlayed,
 		null, null, @scheduleYear, @scheduleWeek
 	)
 

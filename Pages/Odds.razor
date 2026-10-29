@@ -1,0 +1,24 @@
+﻿@page "/odds/{gameIdStr}"
+
+@using Football_Two.Models
+@using Football_Two.Services
+
+@inject DataAccess dataAccess
+
+
+<h5>Odds</h5>
+
+<div style="border:solid">
+
+</div>
+
+@code {
+    [Parameter]
+    public string? gameIdStr { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        //scheduleWeeks = await dataAccess.ScheduleDatesByWeekQuery(scheduleYear);
+
+    }
+}

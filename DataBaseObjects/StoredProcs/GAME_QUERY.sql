@@ -9,7 +9,7 @@ BEGIN
 		G.gameId, 
 		G.visitingTeam as visitingTeamId, TV.teamName visitingTeamName,
 		G.homeTeam as homeTeamId, TH.teamName as homeTeamName,
-		G.stadium, G.datePlayed, G.dayOfWeek, 
+		G.stadium, G.datePlayed, G.dayOfWeekPlayed, 
 		G.visitorScore as visitingTeamScore, G.homeScore as homeTeamScore
 	FROM games g
 		JOIN teams TH ON TH.teamId = g.homeTeam

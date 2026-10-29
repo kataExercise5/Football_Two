@@ -37,7 +37,7 @@ namespace Football_Two.Services
                             game.homeTeamName = rdr.GetString("homeTeamName");
                             game.stadium = rdr.GetBoolean("stadium");
                             game.datePlayed = DateOnly.FromDateTime(Convert.ToDateTime(rdr.GetDateTime("datePlayed")));
-                            game.dayOfWeek = rdr.GetInt16("dayOfWeek");
+                            game.dayOfWeekPlayed = rdr.GetInt16("dayOfWeekPlayed");
 
                             if (!(rdr.IsDBNull("visitingTeamScore")))
                             {
@@ -113,7 +113,7 @@ namespace Football_Two.Services
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@homeTeamName", homeTeam);
                     cmd.Parameters.AddWithValue("@visitorTeamName", visitorTeam);
-                    cmd.Parameters.AddWithValue("@dayOfWeek", (int)(datePlayed.DayOfWeek));
+                    cmd.Parameters.AddWithValue("@dayOfWeekPlayed", (int)(datePlayed.DayOfWeek));
 
 
                     //DateTime dt = DateTime.ParseExact(datePlayed, "yyyy-MM-dd", CultureInfo.InvariantCulture);
