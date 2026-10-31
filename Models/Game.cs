@@ -13,6 +13,7 @@
         public int dayOfWeekPlayed { get; set; }
         public int? visitingTeamScore { get; set; }
         public int? homeTeamScore { get; set; }
+        public int scheduleYear { get; set; }
         public int scheduleWeek { get; set; }
 
         public Game()

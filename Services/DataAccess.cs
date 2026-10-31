@@ -65,6 +65,57 @@ namespace Football_Two.Services
             return Task.FromResult(games.ToArray());
         }
 
+        public Task<Game> GameQueryById(int gameId)
+        {
+            Game selectedGame = null;
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(localHostConnStr))
+                {
+                    SqlCommand cmd = new SqlCommand("GAME_QUERY_BY_ID", conn);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@gameId", gameId);
+
+                    conn.Open();
+
+                    SqlDataReader rdr = cmd.ExecuteReader();
+
+                    if (rdr.HasRows)
+                    {
+                        rdr.Read();
+                        selectedGame = new Game();
+                        selectedGame.gameId = rdr.GetInt32("gameId");
+                        selectedGame.visitingTeamId = rdr.GetInt32("visitingTeamId");
+                        selectedGame.visitingTeamName = rdr.GetString("visitingTeamName");
+                        selectedGame.homeTeamId = rdr.GetInt32("homeTeamId");
+                        selectedGame.homeTeamName = rdr.GetString("homeTeamName");
+                        selectedGame.stadium = rdr.GetBoolean("stadium");
+                        selectedGame.datePlayed = DateOnly.FromDateTime(Convert.ToDateTime(rdr.GetDateTime("datePlayed")));
+                        selectedGame.dayOfWeekPlayed = rdr.GetInt16("dayOfWeekPlayed");
+                        selectedGame.scheduleYear = rdr.GetInt16("scheduleYear");
+                        selectedGame.scheduleWeek = rdr.GetInt16("scheduleWeek");
+
+                        if (!(rdr.IsDBNull("visitingTeamScore")))
+                        {
+                            selectedGame.visitingTeamScore = rdr.GetInt16("visitingTeamScore");
+                        }
+                        if (!(rdr.IsDBNull("homeTeamScore")))
+                        {
+                            selectedGame.homeTeamScore = rdr.GetInt16("homeTeamScore");
+                        }
+                    }
+
+                    rdr.Close();
+                    conn.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            return Task.FromResult(selectedGame);
+        }
+
         public int GameIdQuery(string homeTeam, string visitingTeam, DateTime datePlayed)
         {
             int gameId = -1;
@@ -266,6 +317,49 @@ namespace Football_Two.Services
                 throw;
             }
             return Task.FromResult(scheduleWeeks.ToArray());
+        }
+
+
+        public Task<OddsLine[]> OddsQueryByGame(int gameId)
+        {
+            List<OddsLine> oddsLines = new List<OddsLine>();
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(localHostConnStr))
+                {
+                    SqlCommand cmd = new SqlCommand("ODDS_QUERY_BY_GAME", conn);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@gameId", gameId);
+
+                    conn.Open();
+
+                    SqlDataReader rdr = cmd.ExecuteReader();
+
+                    while (rdr.Read())
+                    {
+                        OddsLine oddsLine = new OddsLine();
+                        oddsLine.linesByTeamId = rdr.GetInt32("linesByTeamId");
+                        oddsLine.teamId = rdr.GetInt32("teamId");
+                        oddsLine.teamName = rdr.GetString("teamName");
+                        oddsLine.bookMakerId = rdr.GetInt32("bookMakerId");
+                        oddsLine.bookMakerTitle = rdr.GetString("bookieTitle");
+                        oddsLine.datePublished = (rdr.GetDateTime("datePublished")).Date;
+                        oddsLine.price = rdr.GetInt16("price");
+                        oddsLine.spread = rdr.GetDecimal("spread");
+                        oddsLine.betType = rdr.GetString("betType");
+
+                        oddsLines.Add(oddsLine);
+                    }
+
+                    rdr.Close();
+                    conn.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            return Task.FromResult(oddsLines.ToArray());
         }
     }
 }

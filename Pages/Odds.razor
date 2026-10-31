@@ -5,20 +5,105 @@
 
 @inject DataAccess dataAccess
 
+<style>
+    td, th {
+        margin-top: 7px;
+        margin-bottom: 7px;
+        margin-left: 7px;
+        margin-right: 7px;
+    }
+</style>
 
 <h5>Odds</h5>
 
 <div style="border:solid">
+    <label style="font-weight:bold">Schedule Year:</label> <label>@game.scheduleYear</label>
+    <label style="font-weight:bold; margin-left:15px;">Schedule Week:</label> <label>@game.scheduleWeek</label>
+    <label style="font-weight:bold; margin-left:15px;">Date:</label> <label>@game.datePlayed</label>
+    <label style="font-weight:bold; margin-left:15px;">Visitor:</label> <label>@game.visitingTeamName</label>
+    @if (game.visitingTeamScore != null)
+    {
+        <label style="margin-left:5px;">@game.visitingTeamScore</label>
+    }
+    <label style="font-weight:bold; margin-left:15px;">Home:</label> <label>@game.homeTeamName</label>
+    @if (game.homeTeamScore != null)
+    {
+        <label style="margin-left:5px;">@game.homeTeamScore</label>
+    }
+</div>
+
+<div class="container" style="margin-top:20px;">
+
+    <div class="row">
+        <div class="col-9">
+            <div>
+                <div class="tableFixHead">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Team</th>
+                                <th>Book</th>
+                                <th>Date Published</th>
+                                <th>Price</th>
+                                <th>Spread</th>
+                                <th>Bet</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var line in oddsLines)
+                            {
+                                <tr>
+                                    <td>@line.teamName</td>
+                                    <td>@line.bookMakerTitle</td>
+                                    <td>@line.datePublished</td>
+                                    <td>@line.price</td>
+                                    <td>@line.spread</td>
+                                    <td>@line.betType</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
+        </div>
+        <div class="col-3">
+            <label>filler</label>
+        </div>
+    </div>
+
 
 </div>
+
 
 @code {
     [Parameter]
     public string? gameIdStr { get; set; }
 
+    private Game game;
+    private int gameId;
+
+    private OddsLine[] oddsLines;
+
     protected override async Task OnInitializedAsync()
     {
-        //scheduleWeeks = await dataAccess.ScheduleDatesByWeekQuery(scheduleYear);
+        if (int.TryParse(gameIdStr, out gameId))
+        {
+            PopulateGameAndOdds();
+        }
+        else
+        {
+            gameId = -9;
+        }
+    }
 
+    private async void PopulateGameAndOdds()
+    {
+        game = await dataAccess.GameQueryById(gameId);
+        game.visitingTeamScore = 32;
+        game.homeTeamScore = 13;
+
+        oddsLines = await dataAccess.OddsQueryByGame(gameId);
     }
 }

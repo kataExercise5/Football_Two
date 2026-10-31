@@ -10,7 +10,7 @@
 
 <div>
     <label style="margin-left:10px;">Year:</label>
-    <input type="number" class="ScoreUpdate" @bind="@scheduleYear" />
+    <input type="text"  class="ScoreUpdate" @bind="@scheduleYear" />
         
     <button class="btn btn-primary" @onclick="PopulateWeeks">Select Weeks</button>
 
@@ -114,7 +114,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-
+        scheduleYear = 2026;
     }
 
     protected async void PopulateWeeks()
