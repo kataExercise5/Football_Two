@@ -22,12 +22,18 @@ namespace Football_Two.Services
             BaseAddress = new Uri("https://api.the-odds-api.com/v4/sports/americanfootball_nfl/odds/")
         };
 
-        public async Task<int> GetLatestOdds(int scheduleWeek = 1)
+        public async Task<int> GetLatestOdds(bool getLiveOdds = true)
         {
             int rc = 0;
 
-            //await CallOddsApi();
-            TestResponse();
+            if (getLiveOdds)
+            {
+                await CallOddsApi();
+            }
+            else
+            {
+                TestResponse();
+            }
 
             ParseApiResponse();
 

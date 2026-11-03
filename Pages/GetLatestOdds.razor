@@ -7,13 +7,19 @@
 <h5>GetLatestOdds</h5>
 
 <div>
-    <button class="btn btn-primary" @onclick="GetOddsDemo">Get Latest Odds</button>
+    <button class="btn btn-primary" @onclick="GetOdds">Get Latest Odds</button>
+    <button class="btn btn-primary" @onclick="GetTestOdds" style="margin-left:24px;">Load Test Odds</button>
 </div>
 
 @code {
     
-    private async void GetOddsDemo()
+    private async void GetOdds()
     {
-        await oddsService.GetLatestOdds();
+        await oddsService.GetLatestOdds(true);
+    }
+
+    private async void GetTestOdds()
+    {
+        await oddsService.GetLatestOdds(false);
     }
 }
