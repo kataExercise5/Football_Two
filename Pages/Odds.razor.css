@@ -1,7 +1,36 @@
 /* CSS for Odds component */
-td, th {
-    margin-top: 7px;
-    margin-bottom: 7px;
-    margin-left: 7px;
-    margin-right: 7px;
+
+.odds-grid {
+    display: grid;
+    grid-template-columns: 70% 30%
+}
+
+.options-grid {
+    display: grid;
+    grid-template-columns: 40% 20% 40%
+}
+
+.table-container {
+    max-height: 700px;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    width: 100%;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+thead th {
+    position: sticky;
+    top: 0;
+    background-color: #f1f1f1;
+    z-index: 1;
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+    border: 1px solid #ddd;
 }
