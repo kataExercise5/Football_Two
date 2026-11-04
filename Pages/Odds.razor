@@ -58,13 +58,21 @@
                         @foreach (var line in oddsLines)
                         {
                             <tr>
-                                <td style="width:20%">@line.teamName</td>
-                                <td style="width:20%">@line.bookMakerTitle</td>
-                                <td style="width:20%">@line.datePublished.ToShortDateString()</td>
-                                <td style="width:12%">@line.betType</td>
+                                <td style="width:20%">
+                                    <button @onclick="@(() => teamIdFilter = line.teamId)"> @line.teamName</button>
+                                </td>
+                                <td style="width:20%">
+                                    <button @onclick="@(() => bookMakerIdFilter = line.bookMakerId)"> @line.bookMakerTitle</button>
+                                </td>
+                                <td style="width:20%">
+                                    <button @onclick="@(() => datePublishedFilter = line.datePublished)"> @line.datePublished.ToShortDateString()</button>
+                                </td>
+                                <td style="width:12%">
+                                    <button @onclick="@(() => betTypeFilter = line.betType)"> @line.betType</button>
+                                </td>
                                 <td style="width:10%">@line.price</td>
                                 <td style="width:10%">@line.spread</td>
-                                <td style="width:8%">Result</td>
+                                <td style="width:8%">@line.result</td>
                             </tr>
                         }
                     </tbody>
@@ -73,101 +81,10 @@
         </div>
 
         <div>
-            <div class="options-grid">
-                @* column 1 of filter and sort select area *@
-                <div>
-                    <div style="text-align:center; margin-top:15px;">
-                        <select name="filter_available" size="7" value="@filterAvailableSelected"
-                                @onchange="@((ChangeEventArgs e) => filterAvailableSelected = e.Value.ToString())">
-                            >
-                            <option value=""></option>
-                            @foreach (var item in filterAvailableList)
-                            {
-                                <option value="@item">@item</option>
-                            }
-                        </select>
-                    </div>
-                </div>
-
-                @* column 2 of filter and sort select area *@
-                <div>
-                    <div>
-                        <div style="text-align:center; margin-top:15px;">
-                            <img src="icons/right-arrow.png" @onclick="AddFilter" />
-                        </div>
-                        <div class="container" style="text-align:center; margin-top:10px;">
-                            <img src="icons/left-arrow.png" @onclick="RemoveFilter" />
-                            <button class="btn"></button>
-                        </div>
-                    </div>
-
-                </div>
-
-                @* column 3 of filter and sort select area *@
-                <div>
-                    <div style="text-align:center; margin-top:15px;">
-                        <select name="filter_using" size="7" value="@filterUsingSelected"
-                                @onchange="@((ChangeEventArgs e) => filterUsingSelected = e.Value.ToString())">
-                            <option value=""></option>
-                            @foreach (var item in filterUsingList)
-                            {
-                                <option value="@item">@item</option>
-                            }
-                        </select>
-                    </div>
-                </div>
-
-            </div>
-
-            <div class="options-grid">
-                @* column 1 of filter and sort select area *@
-                <div>
-
-                    <div style="text-align:center; margin-top:15px;">
-                        <select value="sortAvailableSelected" size="7"
-                                @onchange="@((ChangeEventArgs e) => sortAvailableSelected = e.Value.ToString())">
-                            >
-                            <option value=""></option>
-                            @foreach (var item in sortAvailableList)
-                            {
-                                <option value="@item">@item</option>
-                            }
-                        </select>
-                    </div>
-                </div>
-
-                @* column 2 of filter and sort select area *@
-                <div>
-                    <div style="margin-top:30px;">
-                        <div style="text-align:center; margin-top:15px;">
-                            <img src="icons/right-arrow.png" @onclick="AddSort" />
-                        </div>
-                        <div class="container" style="text-align:center; margin-top:10px;">
-                            <img src="icons/left-arrow.png" @onclick="RemoveSort" />
-                            <button class="btn"></button>
-                        </div>
-                    </div>
-                </div>
-
-                @* column 3 of filter and sort select area *@
-                <div>
-
-                    <div style="text-align:center; margin-top:15px;">
-                        <select name="sort_using" size="7" value="@sortUsingSelected"
-                                @onchange="@((ChangeEventArgs e) => sortUsingSelected = e.Value.ToString())">
-                            <option value=""></option>
-                            @foreach (var item in sortUsingList)
-                            {
-                                <option value="@item">@item</option>
-                            }
-                        </select>
-                    </div>
-                </div>
-
-            </div>
         
             <div style="margin-top:15px; text-align:center;">
-                <button class="btn btn-primary" @onclick="RefreshList">Refresh List</button>
+                <button class="btn btn-primary" @onclick="ApplyFilters">Apply Filters</button>
+                <button class="btn btn-primary" @onclick="RemoveFilters">Remove Filters</button>
             </div>
         </div>
 
@@ -183,30 +100,23 @@
 
     private Game game;
     private int gameId;
+    private DateTime doNotUsePublishedDate;
 
-    private OddsLine[] oddsLines;
+    private OddLine[] oddsLines;
 
-    private string filterAvailableSelected = string.Empty;
-    private string filterUsingSelected = string.Empty;
-    private string sortAvailableSelected = string.Empty;
-    private string sortUsingSelected = string.Empty;
-
-    private List<string> initialList = new List<string>
-    {
-        "Team", "BookMaker", "Published", "Bet Type", "Spread", "Price", "Result"
-    };
-    private List<string> filterAvailableList = new List<string>();
-    private List<string> filterUsingList = new List<string>();
-    private List<string> sortAvailableList = new List<string>();
-    private List<string> sortUsingList = new List<string>();
+    private int teamIdFilter;
+    private int bookMakerIdFilter;
+    private DateTime datePublishedFilter;
+    private string betTypeFilter;
 
 
     protected override async Task OnInitializedAsync()
     {
+        doNotUsePublishedDate = DateTime.Parse("1900-01-01");
         if (int.TryParse(gameIdStr, out gameId))
         {
             PopulateGameAndOdds();
-            PopulateSortAndFilters();
+            InitFilterValues();
         }
         else
         {
@@ -214,57 +124,29 @@
         }
     }
 
+    private void InitFilterValues()
+    {
+        teamIdFilter = 0;
+        bookMakerIdFilter = 0;
+        datePublishedFilter = doNotUsePublishedDate;
+        betTypeFilter = string.Empty;
+    }
+
     private async void PopulateGameAndOdds()
     {
         game = await dataAccess.GameQueryById(gameId);
-        game.visitingTeamScore = 32;
-        game.homeTeamScore = 13;
 
-        oddsLines = await dataAccess.OddsQueryByGame(gameId);
+        oddsLines = await dataAccess.OddsQueryByGame(gameId, doNotUsePublishedDate);
     }
 
-    private void PopulateSortAndFilters()
+    private async void ApplyFilters()
     {
-        filterAvailableList = new List<string>(initialList);
-        sortAvailableList = new List<string>(initialList);
-        StateHasChanged();
+        oddsLines = await dataAccess.OddsQueryByGame(gameId, datePublishedFilter, teamIdFilter, bookMakerIdFilter, betTypeFilter);
     }
 
-    private void FilterAvailableUpdate(string filterAvail)
+    private async void RemoveFilters()
     {
-        filterAvailableSelected = filterAvail;
-    }
-
-    private void RemoveFilter()
-    {
-        filterAvailableList.Add(filterUsingSelected);
-        filterUsingList.Remove(filterUsingSelected);
-        StateHasChanged();
-    }
-
-    private void AddFilter()
-    {
-        filterUsingList.Add(filterAvailableSelected);
-        filterAvailableList.Remove(filterAvailableSelected);
-        StateHasChanged();
-    }
-
-    private void RemoveSort()
-    {
-        sortAvailableList.Add(sortUsingSelected);
-        sortUsingList.Remove(sortUsingSelected);
-        StateHasChanged();
-    }
-
-    private void AddSort()
-    {
-        sortUsingList.Add(sortAvailableSelected);
-        sortAvailableList.Remove(sortAvailableSelected);
-        StateHasChanged();
-    }
-
-    private void RefreshList()
-    {
-        
+        InitFilterValues();
+        oddsLines = await dataAccess.OddsQueryByGame(gameId, datePublishedFilter, teamIdFilter, bookMakerIdFilter, betTypeFilter);
     }
 }

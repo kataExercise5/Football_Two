@@ -1,7 +1,8 @@
 ﻿namespace Football_Two.Models
 {
-    public class OddsLine
+    public class OddLine
     {
+        public int gameId {  get; set; }
         public int linesByTeamId { get; set; }
         public int teamId { get; set; }
         public string teamName { get; set; }
@@ -11,6 +12,8 @@
         public int price { get; set; }
         public decimal spread { get; set; }
         public string betType { get; set; }
+
+        public string result { get; set; }
 
     }
 }

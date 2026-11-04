@@ -8,7 +8,12 @@ namespace Football_Two.Services
     public class DataAccess
     {
         private string localHostConnStr = "Server=localhost;Database=Football;Trusted_Connection=True;";
+        public DateTime doNotUsePublishDate;
 
+        public DataAccess()
+        {
+            doNotUsePublishDate = DateTime.Parse("1900-01-01");
+        }
         public Task<Game[]> GameQuery(int scheduleYear, int scheduleWeek)
         {
             List<Game> games = new List<Game>();
@@ -319,10 +324,9 @@ namespace Football_Two.Services
             return Task.FromResult(scheduleWeeks.ToArray());
         }
 
-
-        public Task<OddsLine[]> OddsQueryByGame(int gameId)
+        public Task<OddLine[]> OddsQueryByGame(int gameId, DateTime datePublished, int teamId = 0, int bookMakerId=0, string betType="")
         {
-            List<OddsLine> oddsLines = new List<OddsLine>();
+            List<OddLine> oddsLines = new List<OddLine>();
             try
             {
                 using (SqlConnection conn = new SqlConnection(localHostConnStr))
@@ -330,6 +334,10 @@ namespace Football_Two.Services
                     SqlCommand cmd = new SqlCommand("ODDS_QUERY_BY_GAME", conn);
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@gameId", gameId);
+                    cmd.Parameters.AddWithValue("@teamId", teamId);
+                    cmd.Parameters.AddWithValue("@bookMakerId", bookMakerId);
+                    cmd.Parameters.AddWithValue("@datePublished", datePublished);
+                    cmd.Parameters.AddWithValue("@betType", betType);
 
                     conn.Open();
 
@@ -337,18 +345,20 @@ namespace Football_Two.Services
 
                     while (rdr.Read())
                     {
-                        OddsLine oddsLine = new OddsLine();
-                        oddsLine.linesByTeamId = rdr.GetInt32("linesByTeamId");
-                        oddsLine.teamId = rdr.GetInt32("teamId");
-                        oddsLine.teamName = rdr.GetString("teamName");
-                        oddsLine.bookMakerId = rdr.GetInt32("bookMakerId");
-                        oddsLine.bookMakerTitle = rdr.GetString("bookieTitle");
-                        oddsLine.datePublished = (rdr.GetDateTime("datePublished")).Date;
-                        oddsLine.price = rdr.GetInt16("price");
-                        oddsLine.spread = rdr.GetDecimal("spread");
-                        oddsLine.betType = rdr.GetString("betType");
+                        OddLine oddLine = new OddLine();
+                        oddLine.gameId = gameId;
+                        oddLine.linesByTeamId = rdr.GetInt32("linesByTeamId");
+                        oddLine.teamId = rdr.GetInt32("teamId");
+                        oddLine.teamName = rdr.GetString("teamName");
+                        oddLine.bookMakerId = rdr.GetInt32("bookMakerId");
+                        oddLine.bookMakerTitle = rdr.GetString("bookieTitle");
+                        oddLine.datePublished = (rdr.GetDateTime("datePublished")).Date;
+                        oddLine.price = rdr.GetInt16("price");
+                        oddLine.spread = rdr.GetDecimal("spread");
+                        oddLine.betType = rdr.GetString("betType");
+                        oddLine.result = rdr.GetString("result");
 
-                        oddsLines.Add(oddsLine);
+                        oddsLines.Add(oddLine);
                     }
 
                     rdr.Close();
