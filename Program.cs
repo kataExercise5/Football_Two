@@ -10,6 +10,7 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<GetOdds>();
 builder.Services.AddSingleton<DataAccess>();
+builder.Services.AddSingleton<OddsDataService>();
 
 var app = builder.Build();
 

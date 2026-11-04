@@ -25,7 +25,7 @@
         }
     </select>
 
-    <button class="btn btn-primary" @onclick="GetGames">Select Games</button>
+    <button class="btn btn-primary" style="margin-left:10px;" @onclick ="GetGames">Select Games</button>
 
     @if (games != null && games.Length > 0)
     {
@@ -39,6 +39,7 @@
             <button class="btn btn-primary" style="margin-left:20px;" @onclick="EditScores">Update Scores</button>
         }
     }
+
     
 </div>
 

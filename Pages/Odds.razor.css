@@ -2,7 +2,7 @@
 
 .odds-grid {
     display: grid;
-    grid-template-columns: 70% 30%
+    grid-template-columns: 80% 20%
 }
 
 .options-grid {
@@ -33,4 +33,13 @@ th, td {
     padding: 10px;
     text-align: left;
     border: 1px solid #ddd;
+}
+
+.btnSelected {
+    background-color: deepskyblue;
+}
+
+.lostMoney {
+    color:red;
+    font-weight:bold;
 }

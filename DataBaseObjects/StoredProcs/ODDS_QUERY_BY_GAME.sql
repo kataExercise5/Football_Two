@@ -9,7 +9,9 @@ BEGIN
 	SET NOCOUNT ON;
 	select lines.linesByTeamId, lines.teamId, t.teamName
 	,lines.bookMakerId ,B.bookieTitle ,lines.datePublished
-	,lines.price ,lines.spread ,lines.betType, lines.result
+	,lines.price ,lines.spread ,lines.betType
+	,g.homeTeam, ISNULL(g.homeScore, 0) AS homeScore, g.visitingTeam, ISNULL(g.visitorScore, 0) AS visitorScore
+	,ISNULL(lines.result, 0) as result
 from games g
 	join LinesByTeam lines on lines.gameId = g.gameId
 	join teams t on t.teamId = lines.teamId

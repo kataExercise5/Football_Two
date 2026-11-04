@@ -99,10 +99,6 @@ namespace Football_Two.Services
         private int GetGameId(BettingLine line)
         {
             DateTime utcCommeceTime = Convert.ToDateTime(line.commence_time);
-            //DateTime utc = DateTime.SpecifyKind(utcRaw, DateTimeKind.Utc);
-            //TimeZoneInfo tzi = TimeZoneInfo.Local;
-            //DateTime est = TimeZoneInfo.ConvertTimeFromUtc(utc, tzi);
-
 
             int gameId = dataAccess.GameIdQuery(line.home_team, line.away_team, utcCommeceTime);
             if (gameId == -1)

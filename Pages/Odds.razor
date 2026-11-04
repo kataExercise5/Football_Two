@@ -4,6 +4,8 @@
 @using Football_Two.Services
 
 @inject DataAccess dataAccess
+@inject OddsDataService oddsService
+
 
 <style>
     td, th {
@@ -59,10 +61,10 @@
                         {
                             <tr>
                                 <td style="width:20%">
-                                    <button @onclick="@(() => teamIdFilter = line.teamId)"> @line.teamName</button>
+                                    <button @onclick="@(() => {teamIdFilter = line.teamId; teamNameFilter = line.teamName;})"> @line.teamName</button>
                                 </td>
                                 <td style="width:20%">
-                                    <button @onclick="@(() => bookMakerIdFilter = line.bookMakerId)"> @line.bookMakerTitle</button>
+                                    <button @onclick="@(() => {bookMakerIdFilter = line.bookMakerId; bookMakerNameFilter = line.bookMakerTitle;})"> @line.bookMakerTitle</button>
                                 </td>
                                 <td style="width:20%">
                                     <button @onclick="@(() => datePublishedFilter = line.datePublished)"> @line.datePublished.ToShortDateString()</button>
@@ -72,7 +74,15 @@
                                 </td>
                                 <td style="width:10%">@line.price</td>
                                 <td style="width:10%">@line.spread</td>
-                                <td style="width:8%">@line.result</td>
+
+                                @if (line.result < 0)
+                                {
+                                    <td class="lostMoney" style="width:8%; text-align:right;">@line.result</td>
+                                }
+                                else
+                                {
+                                    <td style="width:8%; text-align:right;">@line.result</td>
+                                }
                             </tr>
                         }
                     </tbody>
@@ -84,7 +94,33 @@
         
             <div style="margin-top:15px; text-align:center;">
                 <button class="btn btn-primary" @onclick="ApplyFilters">Apply Filters</button>
-                <button class="btn btn-primary" @onclick="RemoveFilters">Remove Filters</button>
+                <button class="btn btn-primary" @onclick="RemoveFilters" style="margin-left:10px;">Remove Filters</button>
+            </div>
+
+            <div style="margin-top:15px; text-align:center;">
+                <div style="margin-top:10px;">
+                    <label>Team:</label>
+                    <label>@teamNameFilter</label>
+                </div>
+                <div style="margin-top:10px;">
+                    <label>Book Maker:</label>
+                    <label>@bookMakerNameFilter</label>
+                </div>
+                <div style="margin-top:10px;">
+                    <label>Date Published:</label>
+                    @if (datePublishedFilter != doNotUsePublishedDate)
+                    {
+                        <label>@datePublishedFilter.ToShortDateString()</label>
+                    }
+                </div>
+                <div style="margin-top:10px;">
+                    <label>Bet Type:</label>
+                    <label>@betTypeFilter</label>
+                </div>
+            </div>
+
+            <div style="margin-top:25px; text-align:center;">
+                <button class="btn btn-primary" @onclick="UpdateResults">Update Results</button>
             </div>
         </div>
 
@@ -105,10 +141,14 @@
     private OddLine[] oddsLines;
 
     private int teamIdFilter;
+    private string teamNameFilter = string.Empty;
     private int bookMakerIdFilter;
+    private string bookMakerNameFilter = string.Empty;
     private DateTime datePublishedFilter;
     private string betTypeFilter = string.Empty;
 
+    private string buttonSelected = "btnSelected";
+    private string buttonNotSelected = "";
 
     protected override async Task OnInitializedAsync()
     {
@@ -127,7 +167,9 @@
     private void InitFilterValues()
     {
         teamIdFilter = 0;
+        teamNameFilter = string.Empty;
         bookMakerIdFilter = 0;
+        bookMakerNameFilter = string.Empty;
         datePublishedFilter = doNotUsePublishedDate;
         betTypeFilter = string.Empty;
     }
@@ -148,5 +190,10 @@
     {
         InitFilterValues();
         oddsLines = await dataAccess.OddsQueryByGame(gameId, datePublishedFilter, teamIdFilter, bookMakerIdFilter, betTypeFilter);
+    }
+
+    private async void UpdateResults()
+    {
+        int rc = await oddsService.UpdateResults(oddsLines);
     }
 }

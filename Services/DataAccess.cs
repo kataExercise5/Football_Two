@@ -356,7 +356,11 @@ namespace Football_Two.Services
                         oddLine.price = rdr.GetInt16("price");
                         oddLine.spread = rdr.GetDecimal("spread");
                         oddLine.betType = rdr.GetString("betType");
-                        oddLine.result = rdr.GetString("result");
+                        oddLine.homeTeamId = rdr.GetInt32("homeTeam");
+                        oddLine.homeTeamScore = rdr.GetInt16("homeScore");
+                        oddLine.visitingTeamId = rdr.GetInt32("visitingTeam");
+                        oddLine.visitingTeamScore = rdr.GetInt16("visitorScore");
+                        oddLine.result = rdr.GetDecimal("result");
 
                         oddsLines.Add(oddLine);
                     }

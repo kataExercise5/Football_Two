@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="DataBaseObjects\AlternativeTables\" />
     <Folder Include="DataBaseObjects\Tables\" />
   </ItemGroup>
 

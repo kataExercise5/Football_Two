@@ -13,7 +13,11 @@
         public decimal spread { get; set; }
         public string betType { get; set; }
 
-        public string result { get; set; }
+        public decimal result { get; set; }
+        public int homeTeamId { get; set; }
+        public int visitingTeamId { get; set; }
+        public int homeTeamScore { get; set; }
+        public int visitingTeamScore { get; set; }
 
     }
 }
