@@ -7,6 +7,7 @@ CREATE TABLE [dbo].[LinesByTeam](
 	[price] [smallint] NOT NULL,
 	[spread] [decimal](3, 1) NULL,
 	[betType] [varchar](20) NULL,
+	[result] [varchar](8) NOT NULL,
  CONSTRAINT [PK_LinesByTeam] PRIMARY KEY CLUSTERED 
 (
 	[linesByTeamId] ASC
@@ -15,4 +16,7 @@ CREATE TABLE [dbo].[LinesByTeam](
 GO
 
 ALTER TABLE [dbo].[LinesByTeam] ADD  DEFAULT ('unknown') FOR [betType]
+GO
+
+ALTER TABLE [dbo].[LinesByTeam] ADD  CONSTRAINT [D_LinesByTeam_RESULT]  DEFAULT ('') FOR [result]
 GO
