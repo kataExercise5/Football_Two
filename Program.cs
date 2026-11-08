@@ -11,6 +11,7 @@ builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<GetOdds>();
 builder.Services.AddSingleton<DataAccess>();
 builder.Services.AddSingleton<OddsDataService>();
+builder.Services.AddSingleton<AnalyzeDataService>();
 
 var app = builder.Build();
 

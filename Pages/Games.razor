@@ -9,23 +9,15 @@
 <h5>Games</h5>
  
 <div>
-    <label style="margin-left:10px;">Year:</label>
-    <input type="text"  class="ScoreUpdate" @bind="@scheduleYear" />
-        
-    <button class="btn btn-primary" @onclick="PopulateWeeks">Select Weeks</button>
+    <div class="two-grid">
+        <div>
+            <ScheduleSelect parmScheduleYearWeek="@scheduleYearWeek"></ScheduleSelect>
+        </div>
+        <div style="text-align:middle;">
+            <button class="btn btn-primary" style="margin-left:10px;" @onclick="GetGames">Select Games</button>
+        </div>
+    </div>
 
-    <label style="margin-left:10px;">Week:</label>
-    <select @bind="@scheduleWeek">
-        @if (formatedScheduleWeeks != null)
-        {
-                @foreach (var fsw in formatedScheduleWeeks)
-                {
-                    <option value="@fsw.Key">@fsw.Value</option>
-                }
-        }
-    </select>
-
-    <button class="btn btn-primary" style="margin-left:10px;" @onclick ="GetGames">Select Games</button>
 
     @if (games != null && games.Length > 0)
     {
@@ -106,37 +98,19 @@
 @code {
 
     private Game[]? games;
-    private ScheduleWeek[]? scheduleWeeks = null;
+    private ScheduleYearWeek[]? scheduleYearWeekList = null;
     private Dictionary<int, string>? formatedScheduleWeeks;
 
-    public int scheduleWeek = -1;
-    public int scheduleYear = -1;
+    public ScheduleYearWeek scheduleYearWeek = new ScheduleYearWeek();
     private bool updateMode = false;
 
     protected override async Task OnInitializedAsync()
     {
-        scheduleYear = 2026;
-    }
-
-    protected async void PopulateWeeks()
-    {
-        scheduleWeeks = await dataAccess.ScheduleDatesByWeekQuery(scheduleYear);
-        formatedScheduleWeeks = new Dictionary<int, string>();
-        foreach (ScheduleWeek sw in scheduleWeeks)
-        {
-            formatedScheduleWeeks.Add(sw.week,
-                "Week # " + sw.week.ToString() + ":  " +
-                DateOnly.FromDateTime(sw.startDate).ToString("MM/dd/yyyy") +
-                " thru " +
-                DateOnly.FromDateTime(sw.endDate).ToString("MM/dd/yyyy")
-            );
-        }
-        scheduleWeek = formatedScheduleWeeks.First().Key;
     }
 
     private async void GetGames()
     {
-        games = await dataAccess.GameQuery(scheduleYear, scheduleWeek);
+        games = await dataAccess.GameQuery(scheduleYearWeek.year, scheduleYearWeek.week);
     }
 
     private async void EditScores()

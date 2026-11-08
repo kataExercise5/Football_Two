@@ -286,9 +286,9 @@ namespace Football_Two.Services
             }
         }
 
-        public Task<ScheduleWeek[]> ScheduleDatesByWeekQuery(int year)
+        public Task<ScheduleYearWeek[]> ScheduleDatesByWeekQuery(int year)
         {
-            List<ScheduleWeek> scheduleWeeks = new List<ScheduleWeek>();
+            List<ScheduleYearWeek> scheduleWeeks = new List<ScheduleYearWeek>();
             try
             {
                 using (SqlConnection conn = new SqlConnection(localHostConnStr))
@@ -303,7 +303,7 @@ namespace Football_Two.Services
 
                     while (rdr.Read())
                     {
-                        ScheduleWeek sw = new ScheduleWeek()
+                        ScheduleYearWeek sw = new ScheduleYearWeek()
                         { 
                             year = rdr.GetInt32("ScheduleYear"),
                             week = rdr.GetInt32("ScheduleWeek"),

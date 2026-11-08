@@ -1,0 +1,26 @@
+﻿@page "/analyze_results/"
+
+@using Football_Two.Services
+@using Football_Two.Models
+
+@inject DataAccess dataAccess
+@inject NavigationManager navMgr
+
+
+<h3>AnalyzeResults</h3>
+
+<div class="two-grid">
+    <div>
+        <ScheduleSelect parmScheduleYearWeek="@scheduleYearWeek"></ScheduleSelect>
+    </div>
+</div>
+
+
+@code {
+
+    public ScheduleYearWeek scheduleYearWeek = new ScheduleYearWeek();
+
+    protected override async Task OnInitializedAsync()
+    {
+    }
+}

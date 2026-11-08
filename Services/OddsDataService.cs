@@ -130,46 +130,6 @@ namespace Football_Two.Services
             }
         }
 
-        private void UpdateResultsData()
-        {
-            try
-            {
-                DataTable dt = new DataTable();
-                
-                DataColumn lineIdCol = new DataColumn("linesByTeamId");
-                lineIdCol.DataType = System.Type.GetType("System.Int32");
-                dt.Columns.Add(lineIdCol);
-
-                DataColumn resultCol = new DataColumn("result");
-                resultCol.DataType = System.Type.GetType("System.Decimal");
-                dt.Columns.Add(resultCol);
-
-                foreach (OddLine result in lines)
-                {
-                    dt.Rows.Add(result.linesByTeamId);
-                    dt.Rows.Add(result.result);
-                }
-
-                using (SqlConnection conn = new SqlConnection(localHostConnStr))
-                {
-                    SqlCommand cmd = new SqlCommand("RESULTS_UPDATE", conn);
-                    cmd.CommandType = CommandType.StoredProcedure;
-
-                    SqlParameter resultsTable = cmd.Parameters.AddWithValue("@results", dt);
-                    resultsTable.Direction = ParameterDirection.Input;
-
-                    conn.Open();
-
-                    int rc = cmd.ExecuteNonQuery();
-                    conn.Close();
-                }
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-        }
-
     }
 
 }

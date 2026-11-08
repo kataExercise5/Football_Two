@@ -5,3 +5,8 @@ td, th {
     margin-left:7px;
     margin-right:7px;
 }
+
+.two-grid {
+    display: grid;
+    grid-template-columns: 50% 50%
+}

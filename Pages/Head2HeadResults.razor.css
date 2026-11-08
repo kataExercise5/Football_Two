@@ -1,0 +1,21 @@
+/* CSS for Head2HeadResults component */
+
+
+.two-grid {
+    display: grid;
+    grid-template-columns: 50% 50%
+}
+
+.three-grid {
+    display: grid;
+    grid-template-columns: 50% 30% 20% 
+}
+
+td, th {
+    margin-top: 7px;
+    margin-bottom: 7px;
+    margin-left: 7px;
+    margin-right: 7px;
+    width:12%;
+    height:32px;
+}

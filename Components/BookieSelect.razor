@@ -1,0 +1,33 @@
+﻿@using Football_Two.Services
+@using Football_Two.Models
+
+@inject AnalyzeDataService dataAccess
+
+<div class="select-unit">
+    <h5>BookMaker Select</h5>
+    <div>
+        <label style="margin-left:10px;">Book Makers:</label>
+        
+        <select @bind="@parmScheduleYearWeek.bookMakerId" style="width:120px;">
+            @if (bookMakers != null)
+            {
+                @foreach (var bookie in bookMakers)
+                {
+                    <option value="@bookie.bookMakerId">@bookie.title</option>
+                }
+            }
+        </select> 
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public ScheduleYearWeek parmScheduleYearWeek { get; set; }
+
+    private Bookmaker[] bookMakers;
+
+    protected override async Task OnInitializedAsync()
+    {
+        bookMakers = await dataAccess.BookMakersQuery();
+    }
+}

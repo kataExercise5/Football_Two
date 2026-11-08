@@ -1,0 +1,43 @@
+﻿@using Football_Two.Services
+@using Football_Two.Models
+
+@inject AnalyzeDataService dataAccess
+
+
+<div class="select-unit">
+    <h5>Date Published Select</h5>
+    <div>
+        <button class="btn btn-primary" @onclick="@GetPublishedDates" style="margin-left:20px;">Get Published Dates</button>
+        <label style="margin-left:10px;">Published Dates:</label>
+                
+        <select @bind="@parmScheduleYearWeek.datePubStr" style="width:120px;">
+            @if (datesPublished != null)
+            {
+                @foreach (var pub in datesPublished)
+                {
+                    <option value="@pub.ToShortDateString()">@pub.ToShortDateString()</option>
+                }
+                <option value="2026-12-12">2026-12-12</option>
+            }
+        </select>
+    </div>
+</div>
+
+
+
+@code {
+
+    [Parameter]
+    public ScheduleYearWeek parmScheduleYearWeek { get; set; }
+
+    private DateOnly[] datesPublished;
+
+    protected override async Task OnInitializedAsync()
+    {
+    }
+
+    private async void GetPublishedDates()
+    {
+        datesPublished = await dataAccess.DatePublishedQuery(parmScheduleYearWeek);
+    }
+}

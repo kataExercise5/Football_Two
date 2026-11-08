@@ -1,0 +1,64 @@
+﻿@using Football_Two.Services
+@using Football_Two.Models
+
+@inject DataAccess dataAccess
+
+
+<div class="select-unit">
+    <h5>Select Schedule Year and Week</h5>
+    
+    <div>
+
+        <label style="margin-left:10px;">Year:</label>
+        <input type="text" class="ScoreUpdate" style="width:80px;" @bind="@parmScheduleYearWeek.year" />
+
+        <button class="btn btn-primary" @onclick="PopulateWeeks">Select Weeks</button>
+
+        <label style="margin-left:10px;">Week:</label>
+        <select @bind="@parmScheduleYearWeek.week" style="width:320px;">
+            @if (formatedScheduleWeeks != null)
+            {
+                @foreach (var fsw in formatedScheduleWeeks)
+                {
+                    <option value="@fsw.Key">@fsw.Value</option>
+                }
+            }
+        </select>
+    </div>
+</div>
+
+
+@code {
+    [Parameter]
+    public ScheduleYearWeek parmScheduleYearWeek { get; set; }
+
+    private int scheduleYear;
+    private int scheduleWeek;
+    private ScheduleYearWeek[]? scheduleWeeks = null;
+    private Dictionary<int, string>? formatedScheduleWeeks;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (parmScheduleYearWeek is null || parmScheduleYearWeek.year == 0)
+        {
+            parmScheduleYearWeek.year = DateTime.Now.Year;
+        }
+    }
+
+    protected async void PopulateWeeks()
+    {
+        scheduleWeeks = await dataAccess.ScheduleDatesByWeekQuery(parmScheduleYearWeek.year);
+        formatedScheduleWeeks = new Dictionary<int, string>();
+        foreach (ScheduleYearWeek sw in scheduleWeeks)
+        {
+            formatedScheduleWeeks.Add(sw.week,
+                "Week # " + sw.week.ToString() + ":  " +
+                DateOnly.FromDateTime(sw.startDate).ToString("MM/dd/yyyy") +
+                " thru " +
+                DateOnly.FromDateTime(sw.endDate).ToString("MM/dd/yyyy")
+            );
+        }
+        parmScheduleYearWeek.week = formatedScheduleWeeks.First().Key;
+    }
+}
