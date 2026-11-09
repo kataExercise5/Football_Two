@@ -1,0 +1,87 @@
+﻿@page "/spread_results/"
+
+@using Football_Two.Components
+@using Football_Two.Services
+@using Football_Two.Models
+
+@inject AnalyzeDataService dataAccess
+@inject NavigationManager navMgr
+
+
+<h3>Spread Results</h3>
+
+
+<div class="three-grid">
+    <div>
+        <ScheduleSelect parmScheduleYearWeek="@scheduleYearWeek"></ScheduleSelect>
+    </div>
+    <div>
+        <DatePublishedSelect parmScheduleYearWeek="@scheduleYearWeek"></DatePublishedSelect>
+    </div>
+    <div>
+        <button style="margin-left:24px;margin-top:24px;" class="btn btn-primary" @onclick="GetResults">Get Results</button>
+    </div>
+</div>
+
+
+<div style="margin-top:20px;">
+    @if (spreadResults != null)
+    {
+        <div class="tableFixHead">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Book Maker</th>
+                        <th>Home Team Favored</th>
+                        <th>Visiting Team Favored</th>
+                        <th>Home Team Underdog</th>
+                        <th>Visiting Team Underdog</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var result in spreadResults)
+                    {
+                        <tr>
+                            <td>@result.Key</td>
+                            @foreach (var winnings in result.Value)
+                            {
+                                <td>@winnings</td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+
+@code {
+
+    public ScheduleYearWeek scheduleYearWeek = new ScheduleYearWeek();
+    private Result[] results;
+    Dictionary<string, List<decimal>> spreadResults;
+
+    protected override async Task OnInitializedAsync()
+    {
+    }
+
+
+    private async void GetResults()
+    {
+        scheduleYearWeek.datePublished = DateTime.Parse(scheduleYearWeek.datePubStr);
+        results = await dataAccess.SpreadResults(scheduleYearWeek, 0);
+
+        spreadResults = new Dictionary<string, List<decimal>>();
+        int idx = 0;
+        while (idx < results.Length)
+        {
+            List<decimal> winnings = new List<decimal>();
+            spreadResults.Add(results[idx].bookieName, winnings);
+            for (int k = 0; k < 4; k++)
+            {
+                winnings.Add(results[idx].winnings);
+                idx++;
+            }
+        }
+    }
+}

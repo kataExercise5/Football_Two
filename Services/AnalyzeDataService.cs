@@ -126,5 +126,48 @@ namespace Football_Two.Services
             }
             return Task.FromResult(results.ToArray());
         }
+
+        public Task<Result[]> SpreadResults(ScheduleYearWeek scheduleYearWeek, int spread)
+        {
+            List<Result> results = new List<Result>();
+
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(localHostConnStr))
+                {
+                    SqlCommand cmd = new SqlCommand("SPREAD_RESULTS_BY_BOOKIE", conn);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@scheduledYear", scheduleYearWeek.year);
+                    cmd.Parameters.AddWithValue("@scheduledWeek", scheduleYearWeek.week);
+                    cmd.Parameters.AddWithValue("@datePublished", scheduleYearWeek.datePublished);
+                    cmd.Parameters.AddWithValue("@spread", spread);
+
+                    conn.Open();
+
+                    SqlDataReader rdr = cmd.ExecuteReader();
+
+                    if (rdr.HasRows)
+                    {
+                        while (rdr.Read())
+                        {
+                            Result result = new Result();
+                            result.titleIdx = rdr.GetInt32("titleIdx");
+                            result.title = rdr.GetString("title");
+                            result.bookieName = rdr.GetString("bookMaker");
+                            result.winnings = rdr.GetDecimal("result");
+                            results.Add(result);
+                        }
+                    }
+
+                    rdr.Close();
+                    conn.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            return Task.FromResult(results.ToArray());
+        }
     }
 }
