@@ -127,7 +127,7 @@ namespace Football_Two.Services
             return Task.FromResult(results.ToArray());
         }
 
-        public Task<Result[]> SpreadResults(ScheduleYearWeek scheduleYearWeek, int spread)
+        public Task<Result[]> SpreadResults(ScheduleYearWeek scheduleYearWeek, decimal spread)
         {
             List<Result> results = new List<Result>();
 

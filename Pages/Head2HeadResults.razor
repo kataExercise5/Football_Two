@@ -9,20 +9,22 @@
 
 <h3>Head2HeadResults</h3>
 
-<div class="three-grid">  
+<div class="four-grid">  
     <div>
         <ScheduleSelect parmScheduleYearWeek="@scheduleYearWeek"></ScheduleSelect>
     </div>
     <div>
         <DatePublishedSelect parmScheduleYearWeek="@scheduleYearWeek"></DatePublishedSelect>
     </div>
+    <div class="select-unit">
+        <label style="margin-left:10px;">Price:</label>
+        <input type="text" class="ScoreUpdate" style="width:80px;" @bind="@priceStr" />
+    </div>
     <div>
         <button style="margin-left:24px;margin-top:24px;" class="btn btn-primary" @onclick="GetHead2HeadResults">Get Results</button>
     </div>
 </div>
 
-<div>
-</div>
 
 <div style="margin-top:20px;">
     @if (head2headResults != null)
@@ -63,6 +65,8 @@
     public ScheduleYearWeek scheduleYearWeek = new ScheduleYearWeek();
     private Result[] results;
     Dictionary<string, List<decimal>> head2headResults;
+    private string priceStr;
+    private int price;
 
     protected override async Task OnInitializedAsync()
     {
@@ -71,7 +75,11 @@
     private async void GetHead2HeadResults()
     {
         scheduleYearWeek.datePublished = DateTime.Parse(scheduleYearWeek.datePubStr);
-        results = await dataAccess.Head2HeadResults(scheduleYearWeek, 0);
+        if (!(int.TryParse(priceStr, out price)))
+        {
+            price = 0;
+        }
+        results = await dataAccess.Head2HeadResults(scheduleYearWeek, price);
 
         head2headResults = new Dictionary<string, List<decimal>>();
         int idx = 0;

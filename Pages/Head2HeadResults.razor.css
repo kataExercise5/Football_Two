@@ -11,6 +11,11 @@
     grid-template-columns: 50% 30% 20% 
 }
 
+.four-grid {
+    display: grid;
+    grid-template-columns: 40% 30% 15% 15%
+}
+
 td, th {
     margin-top: 7px;
     margin-bottom: 7px;

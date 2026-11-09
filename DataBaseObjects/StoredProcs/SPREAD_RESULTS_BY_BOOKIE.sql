@@ -11,9 +11,10 @@ BEGIN
 	from LinesByTeam lines
 		join Games g on g.gameId = lines.gameId
 		join BookMakers b on b.bookMakerId = lines.bookMakerId
-	where g.scheduleYear = 2026 and g.scheduleWeek = 8
+	where g.scheduleYear = @scheduledYear and g.scheduleWeek = @scheduledWeek
 		and lines.teamId = g.homeTeam and lines.betType = 'spreads'
-		and spread > @spread
+		and lines.datePublished = @datePublished 
+		and spread < 0 - @spread
 	group by b.bookieTitle
 
 	UNION
@@ -22,9 +23,10 @@ BEGIN
 	from LinesByTeam lines
 		join Games g on g.gameId = lines.gameId
 		join BookMakers b on b.bookMakerId = lines.bookMakerId
-	where g.scheduleYear = 2026 and g.scheduleWeek = 8
+	where g.scheduleYear = @scheduledYear and g.scheduleWeek = @scheduledWeek
 		and lines.teamId = g.visitingTeam and lines.betType = 'spreads'
-		and spread > @spread
+		and lines.datePublished = @datePublished 
+		and spread < 0 - @spread
 	group by b.bookieTitle
 
 	UNION
@@ -33,9 +35,10 @@ BEGIN
 	from LinesByTeam lines
 		join Games g on g.gameId = lines.gameId
 		join BookMakers b on b.bookMakerId = lines.bookMakerId
-	where g.scheduleYear = 2026 and g.scheduleWeek = 8
+	where g.scheduleYear = @scheduledYear and g.scheduleWeek = @scheduledWeek
 		and lines.teamId = g.homeTeam and lines.betType = 'spreads'
-		and spread < @spread
+		and lines.datePublished = @datePublished 
+		and spread > @spread
 	group by b.bookieTitle
 
 	UNION
@@ -44,9 +47,10 @@ BEGIN
 	from LinesByTeam lines
 		join Games g on g.gameId = lines.gameId
 		join BookMakers b on b.bookMakerId = lines.bookMakerId
-	where g.scheduleYear = 2026 and g.scheduleWeek = 8
+	where g.scheduleYear = @scheduledYear and g.scheduleWeek = @scheduledWeek
 		and lines.teamId = g.visitingTeam and lines.betType = 'spreads'
-		and spread < @spread
+		and lines.datePublished = @datePublished 
+		and spread > @spread
 	group by b.bookieTitle
 
 	order by  bookMaker, titleIdx
