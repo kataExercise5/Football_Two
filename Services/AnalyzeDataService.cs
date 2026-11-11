@@ -127,7 +127,7 @@ namespace Football_Two.Services
             return Task.FromResult(results.ToArray());
         }
 
-        public Task<Result[]> SpreadResults(ScheduleYearWeek scheduleYearWeek, decimal spread)
+        public Task<Result[]> SpreadResultsByBookie(ScheduleYearWeek scheduleYearWeek, decimal spread)
         {
             List<Result> results = new List<Result>();
 
@@ -155,6 +155,95 @@ namespace Football_Two.Services
                             result.title = rdr.GetString("title");
                             result.bookieName = rdr.GetString("bookMaker");
                             result.winnings = rdr.GetDecimal("result");
+                            result.scheduleWeek = scheduleYearWeek.week;
+                            results.Add(result);
+                        }
+                    }
+
+                    rdr.Close();
+                    conn.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            return Task.FromResult(results.ToArray());
+        }
+
+        public Task<Result[]> SpreadResultsByWeek(ScheduleYearWeek scheduleYearWeekStart, int endWeek, decimal spread)
+        {
+            List<Result> results = new List<Result>();
+
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(localHostConnStr))
+                {
+                    SqlCommand cmd = new SqlCommand("SPREAD_RESULTS_BY_BOOKIE_BY_WEEK", conn);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@scheduledYear", scheduleYearWeekStart.year);
+                    cmd.Parameters.AddWithValue("@scheduledWeekStart", scheduleYearWeekStart.week);
+                    cmd.Parameters.AddWithValue("@scheduledWeekEnd", endWeek);
+                    cmd.Parameters.AddWithValue("@spread", spread);
+
+                    conn.Open();
+
+                    SqlDataReader rdr = cmd.ExecuteReader();
+
+                    if (rdr.HasRows)
+                    {
+                        while (rdr.Read())
+                        {
+                            Result result = new Result();
+                            result.titleIdx = rdr.GetInt32("titleIdx");
+                            //result.title = rdr.GetString("title");
+                            result.bookieName = rdr.GetString("bookieTitle");
+                            result.winnings = rdr.GetDecimal("result");
+                            result.scheduleWeek = rdr.GetInt16("scheduleDWeek");
+                            results.Add(result);
+                        }
+                    }
+
+                    rdr.Close();
+                    conn.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            return Task.FromResult(results.ToArray());
+        }
+
+        public Task<Result[]> SpreadResultsByWeek(ScheduleYearWeek scheduleYearWeekStart, ScheduleYearWeek scheduleYearWeekEnd, decimal spread)
+        {
+            List<Result> results = new List<Result>();
+
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(localHostConnStr))
+                {
+                    SqlCommand cmd = new SqlCommand("SPREAD_RESULTS_BY_BOOKIE_BY_WEEK", conn);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@scheduledYear", scheduleYearWeekStart.year);
+                    cmd.Parameters.AddWithValue("@scheduledWeekStart", scheduleYearWeekStart.week);
+                    cmd.Parameters.AddWithValue("@scheduledWeekEnd", scheduleYearWeekEnd.week);
+                    cmd.Parameters.AddWithValue("@spread", spread);
+
+                    conn.Open();
+
+                    SqlDataReader rdr = cmd.ExecuteReader();
+
+                    if (rdr.HasRows)
+                    {
+                        while (rdr.Read())
+                        {
+                            Result result = new Result();
+                            result.titleIdx = rdr.GetInt32("titleIdx");
+                            result.title = rdr.GetString("title");
+                            result.bookieName = rdr.GetString("bookMaker");
+                            result.winnings = rdr.GetDecimal("result");
+                            result.scheduleWeek = rdr.GetInt32("scheduleWeek");
                             results.Add(result);
                         }
                     }

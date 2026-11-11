@@ -1,0 +1,12 @@
+CREATE TABLE [dbo].[Results](
+	[titleIdx] [int] NOT NULL,
+	[bookMakerId] [int] NOT NULL,
+	[scheduledWeek] [smallint] NOT NULL,
+	[result] [DECIMAL] NULL,
+ CONSTRAINT [PK_Results] PRIMARY KEY CLUSTERED 
+(
+	[titleIdx] ASC,
+	[bookMakerId] ASC,
+	[scheduledWeek] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]

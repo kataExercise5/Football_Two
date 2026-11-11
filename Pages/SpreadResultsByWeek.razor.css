@@ -1,0 +1,7 @@
+/* CSS for SpreadResultsByWeek component */
+
+
+.four-grid {
+    display: grid;
+    grid-template-columns: 40% 40% 10% 10%
+}

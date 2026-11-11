@@ -80,7 +80,7 @@
         {
             spread = 0;    
         }
-        results = await dataAccess.SpreadResults(scheduleYearWeek, spread);
+        results = await dataAccess.SpreadResultsByBookie(scheduleYearWeek, spread);
 
         spreadResults = new Dictionary<string, List<decimal>>();
         int idx = 0;

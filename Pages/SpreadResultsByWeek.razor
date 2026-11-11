@@ -1,0 +1,65 @@
+﻿@page "/spread_results_by_week/"
+
+@using Football_Two.Components
+@using Football_Two.Services
+@using Football_Two.Models
+
+@inject AnalyzeDataService dataAccess
+
+<h3>Spread Results By Week</h3>
+
+<div class="four-grid">
+    <div>
+        <label>Year Start Week</label>
+        <ScheduleSelect parmScheduleYearWeek="@scheduleYearWeekStart"></ScheduleSelect>
+    </div>
+    <div>
+        <label>Year End Week</label>
+        <ScheduleSelect parmScheduleYearWeek="@scheduleYearWeekEnd"></ScheduleSelect>
+    </div>
+    <div class="select-unit">
+        <label style="margin-left:10px;">Spread:</label>
+        <input type="text" class="ScoreUpdate" style="width:80px;" @bind="@spreadStr" />
+    </div>
+    <div>
+        <button style="margin-left:24px;margin-top:24px;" class="btn btn-primary" @onclick="GetResults">Get Results</button>
+    </div>
+</div>
+
+@code {
+    public ScheduleYearWeek scheduleYearWeekStart = new ScheduleYearWeek();
+    public ScheduleYearWeek scheduleYearWeekEnd = new ScheduleYearWeek();
+    private Result[] results;
+    Dictionary<string, List<decimal>> spreadResults;
+    private string spreadStr;
+    private decimal spread;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+    }
+
+
+    private async void GetResults()
+    {
+        if (!(decimal.TryParse(spreadStr, out spread)))
+        {
+            spread = 0;
+        }
+        results = await dataAccess.SpreadResultsByWeek(scheduleYearWeekStart, scheduleYearWeekEnd.week, spread);
+
+        spreadResults = new Dictionary<string, List<decimal>>();
+        int idx = 0;
+        while (idx < results.Length)
+        {
+            List<decimal> winnings = new List<decimal>();
+            spreadResults.Add(results[idx].bookieName, winnings);
+            for (int k = 0; k < 4; k++)
+            {
+                winnings.Add(results[idx].winnings);
+                idx++;
+            }
+        }
+    }
+
+}

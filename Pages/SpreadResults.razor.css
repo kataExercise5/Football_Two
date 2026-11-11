@@ -8,5 +8,5 @@
 
 .four-grid {
     display: grid;
-    grid-template-columns: 40% 30% 15% 15%
+    grid-template-columns: 45% 30% 15% 10%
 }
