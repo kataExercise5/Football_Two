@@ -26,6 +26,53 @@
     </div>
 </div>
 
+<div style="margin-top:20px;">
+    @if (results != null)
+    {
+        titleIdx = 0;
+
+    }
+</div>
+
+<div style="margin-top:20px;">
+    @if (results != null)
+    {
+        resultsIdx = 0;
+        @for (titleIdx = 1; titleIdx < 5; titleIdx++)
+        {
+            <div class="tableFixHead" style="margin-top:20px;">
+                <h5 style="margin-bottom:5px;">@titles[titleIdx-1]</h5>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Book Maker</th>
+                            @for (int weekIdx = scheduleYearWeekStart.week; weekIdx <= scheduleYearWeekEnd.week; weekIdx++)
+                            {
+                                <th>Week @weekIdx.ToString()</th>
+                            }
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @while (resultsIdx < results.Length && results[resultsIdx].titleIdx == titleIdx)
+                        {
+                            <tr>
+                                <td>@results[resultsIdx].bookieName</td>
+                                @for (int weekIdx = scheduleYearWeekStart.week; weekIdx <= scheduleYearWeekEnd.week; weekIdx++)
+                                {
+                                    <td>@results[resultsIdx].winnings</td>
+                                    resultsIdx++;
+                                }
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+
+    }
+</div>
+
+
 @code {
     public ScheduleYearWeek scheduleYearWeekStart = new ScheduleYearWeek();
     public ScheduleYearWeek scheduleYearWeekEnd = new ScheduleYearWeek();
@@ -33,7 +80,10 @@
     Dictionary<string, List<decimal>> spreadResults;
     private string spreadStr;
     private decimal spread;
+    private int titleIdx;
+    private int resultsIdx;
 
+    private string[] titles = new string[4] { "Home Team Favored", "Visiting Team Favored", "Home Team Underdog", "Visiting Team Underdog" };
 
     protected override async Task OnInitializedAsync()
     {
@@ -48,18 +98,18 @@
         }
         results = await dataAccess.SpreadResultsByWeek(scheduleYearWeekStart, scheduleYearWeekEnd.week, spread);
 
-        spreadResults = new Dictionary<string, List<decimal>>();
-        int idx = 0;
-        while (idx < results.Length)
-        {
-            List<decimal> winnings = new List<decimal>();
-            spreadResults.Add(results[idx].bookieName, winnings);
-            for (int k = 0; k < 4; k++)
-            {
-                winnings.Add(results[idx].winnings);
-                idx++;
-            }
-        }
+        // spreadResults = new Dictionary<string, List<decimal>>();
+        // int idx = 0;
+        // while (idx < results.Length)
+        // {
+        //     List<decimal> winnings = new List<decimal>();
+        //     spreadResults.Add(results[idx].bookieName, winnings);
+        //     for (int k = 0; k < 4; k++)
+        //     {
+        //         winnings.Add(results[idx].winnings);
+        //         idx++;
+        //     }
+        // }
     }
 
 }
