@@ -11,15 +11,25 @@
     <button class="btn btn-primary" @onclick="GetTestOdds" style="margin-left:24px;">Load Test Odds</button>
 </div>
 
+<div style="margin-top:16px;">
+    <label>@retrieveOddsStatus</label>
+</div>
+
 @code {
-    
+
+    private string retrieveOddsStatus;
+
     private async void GetOdds()
     {
+        retrieveOddsStatus = "Working on it....";
         await oddsService.GetLatestOdds(true);
+        retrieveOddsStatus = "Complete";
     }
 
     private async void GetTestOdds()
     {
+        retrieveOddsStatus = "Working on it....";
         await oddsService.GetLatestOdds(false);
+        retrieveOddsStatus = "Complete";
     }
 }
