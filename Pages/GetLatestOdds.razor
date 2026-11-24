@@ -12,12 +12,17 @@
 </div>
 
 <div style="margin-top:16px;">
-    <label>@retrieveOddsStatus</label>
+    <label role="status">Status: @retrieveOddsStatus</label>
 </div>
 
 @code {
 
     private string retrieveOddsStatus;
+
+    protected override async Task OnInitializedAsync()
+    {
+        retrieveOddsStatus = string.Empty;
+    }
 
     private async void GetOdds()
     {
