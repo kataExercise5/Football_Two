@@ -7,7 +7,7 @@
 @inject AnalyzeDataService dataAccess
 @inject NavigationManager navMgr
 
-<h3>Head2HeadResults</h3>
+<h3>Head2HeadResults <span><label style="color:red;">@status</label></span></h3>
 
 <div class="four-grid">  
     <div>
@@ -68,12 +68,21 @@
     private string priceStr;
     private int price;
 
+    private string status = string.Empty;
+
     protected override async Task OnInitializedAsync()
     {
     }
 
     private async void GetHead2HeadResults()
     {
+        if (scheduleYearWeek.datePubStr is null)
+        {
+            status = "Please select a published date.";
+            return;
+        }
+
+        status = string.Empty;
         scheduleYearWeek.datePublished = DateTime.Parse(scheduleYearWeek.datePubStr);
         if (!(int.TryParse(priceStr, out price)))
         {

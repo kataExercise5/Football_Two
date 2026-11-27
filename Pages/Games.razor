@@ -1,4 +1,5 @@
 ﻿@page "/games"
+@page "/games/{parmYear}/{parmWeek}"
 
 @using Football_Two.Services
 @using Football_Two.Models
@@ -7,7 +8,7 @@
 @inject NavigationManager navMgr
 
 <h5>Games</h5>
- 
+
 <div>
     <div class="two-grid">
         <div>
@@ -97,6 +98,11 @@
 
 @code {
 
+    [Parameter]
+    public string? parmYear { get; set; }
+    [Parameter]
+    public string? parmWeek { get; set; }
+
     private Game[]? games;
     private ScheduleYearWeek[]? scheduleYearWeekList = null;
     private Dictionary<int, string>? formatedScheduleWeeks;
@@ -106,6 +112,18 @@
 
     protected override async Task OnInitializedAsync()
     {
+        scheduleYearWeek = new ScheduleYearWeek();
+        int tempInt;
+        if (parmYear != null && int.TryParse(parmYear, out tempInt))
+        {
+            scheduleYearWeek.year = tempInt;
+
+            //only use week if year is valid
+            if (parmWeek != null && int.TryParse(parmWeek, out tempInt))
+            {
+                scheduleYearWeek.week = tempInt;
+            }
+        }
     }
 
     private async void GetGames()

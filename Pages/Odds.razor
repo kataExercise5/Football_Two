@@ -5,6 +5,7 @@
 
 @inject DataAccess dataAccess
 @inject OddsDataService oddsService
+@inject NavigationManager navMgr
 
 
 <style>
@@ -122,6 +123,10 @@
             <div style="margin-top:25px; text-align:center;">
                 <button class="btn btn-primary" @onclick="UpdateResults">Update Results</button>
             </div>
+
+            <div style="margin-top:35px; border:solid; text-align:center;">
+                <button class="btn btn-primary" style="margin-top:16px; margin-bottom:16px;" @onclick="ReturnToGames">Return to Games Page</button>
+            </div>
         </div>
 
     </div>
@@ -195,5 +200,11 @@
     private async void UpdateResults()
     {
         int rc = await oddsService.UpdateResults(oddsLines);
+    }
+
+    private void ReturnToGames()
+    {
+        string url = "/games/" + game.scheduleYear.ToString() + "/" + game.scheduleWeek.ToString();
+        navMgr.NavigateTo(url);
     }
 }

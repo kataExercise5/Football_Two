@@ -18,7 +18,14 @@
             {
                 @foreach (var fsw in formatedScheduleWeeks)
                 {
-                    <option value="@fsw.Key">@fsw.Value</option>
+                    if (fsw.Key == parmScheduleYearWeek.week)
+                    {
+                        <option value="@fsw.Key" selected>@fsw.Value</option>
+                    }
+                    else
+                    {
+                        <option value="@fsw.Key">@fsw.Value</option>
+                    }
                 }
             }
         </select>
@@ -58,6 +65,9 @@
                 DateOnly.FromDateTime(sw.endDate).ToString("MM/dd/yyyy")
             );
         }
-        parmScheduleYearWeek.week = formatedScheduleWeeks.First().Key;
+        if (parmScheduleYearWeek.week == 0)
+        {
+            parmScheduleYearWeek.week = formatedScheduleWeeks.First().Key;
+        }
     }
 }
